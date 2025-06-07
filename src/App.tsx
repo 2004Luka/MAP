@@ -9,9 +9,6 @@ function App() {
 
   return (
     <>
-    <div>
-      <h1 className='text-4xl font-bold'>GeoRoutes</h1>
-    </div>
     <div className='mt-8'>
       <Map />
     </div>
