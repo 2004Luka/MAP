@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import Cookies from 'js-cookie'
 import './App.css'
 import Map from './Map'
 import { PathfindingControls } from './components/PathfindingControls'
@@ -7,13 +8,33 @@ import type { City, AlgorithmType } from './types'
 import { calculatePathDistance, createGraph } from './utils/pathfinding'
 
 function App() {
-  const [selectedCities, setSelectedCities] = useState<City[]>([])
+  // Load from cookies if present
+  const cookieStart = Cookies.get('startCity')
+  const cookieEnd = Cookies.get('endCity')
+  const cookieSettings = Cookies.get('geoSettings')
+  const [selectedCities, setSelectedCities] = useState<City[]>([
+    cookieStart ? cities.find(c => c.name === cookieStart)! : undefined,
+    cookieEnd ? cities.find(c => c.name === cookieEnd)! : undefined,
+  ].filter(Boolean) as City[])
   const [path, setPath] = useState<string[]>([])
   const [algorithm, setAlgorithm] = useState<AlgorithmType>('astar')
   const [totalDistance, setTotalDistance] = useState<number>(0)
   const [roadDistance, setRoadDistance] = useState<number>(0)
   const [nodesExplored, setNodesExplored] = useState<number>(0)
   const [roadRoute, setRoadRoute] = useState<[number, number][]>([])
+  // Settings state
+  const [mapStyle, setMapStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).mapStyle : 'light_all')
+  const [markerStyle, setMarkerStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).markerStyle : { size: 4, color: '#6B7280' })
+  const [routeStyle, setRouteStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).routeStyle : { weight: 3, color: '#3B82F6', opacity: 0.8 })
+
+  // Save to cookies on change
+  useEffect(() => {
+    if (selectedCities[0]) Cookies.set('startCity', selectedCities[0].name)
+    if (selectedCities[1]) Cookies.set('endCity', selectedCities[1].name)
+  }, [selectedCities])
+  useEffect(() => {
+    Cookies.set('geoSettings', JSON.stringify({ mapStyle, markerStyle, routeStyle }))
+  }, [mapStyle, markerStyle, routeStyle])
 
   const handlePathFound = (
     path: string[],
@@ -101,6 +122,12 @@ function App() {
         path={path}
         algorithm={algorithm}
         roadRoute={roadRoute}
+        mapStyle={mapStyle}
+        markerStyle={markerStyle}
+        routeStyle={routeStyle}
+        setMapStyle={setMapStyle}
+        setMarkerStyle={setMarkerStyle}
+        setRouteStyle={setRouteStyle}
       />
       <PathfindingControls
         onPathFound={handlePathFound}
