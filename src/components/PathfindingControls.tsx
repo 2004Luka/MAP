@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 interface Graph {
   [key: string]: { [key: string]: number };
@@ -11,15 +11,34 @@ interface Heuristic {
 interface PathfindingControlsProps {
   onPathFound: (path: string[], totalDistance: number, nodesExplored: number, algorithmType: 'astar' | 'iddfs') => void;
   cities: { name: string; lat: number; lng: number }[];
+  algorithmType: 'astar' | 'iddfs';
+  totalDistance: number;
+  roadDistance: number;
+  nodesExplored: number;
 }
 
-export function PathfindingControls({ onPathFound, cities }: PathfindingControlsProps) {
+export function PathfindingControls({ 
+  onPathFound, 
+  cities, 
+  algorithmType,
+  totalDistance,
+  roadDistance,
+  nodesExplored 
+}: PathfindingControlsProps) {
   const [startCity, setStartCity] = useState('');
   const [endCity, setEndCity] = useState('');
   const [algorithm, setAlgorithm] = useState<'astar' | 'iddfs'>('astar');
-  const [totalDistance, setTotalDistance] = useState<number>(0);
   const [estimatedTime, setEstimatedTime] = useState<number>(0);
-  const [nodesExplored, setNodesExplored] = useState<number>(0);
+  const [startSearch, setStartSearch] = useState('');
+  const [endSearch, setEndSearch] = useState('');
+
+  const filteredStartCities = cities.filter(city => 
+    city.name.toLowerCase().includes(startSearch.toLowerCase())
+  );
+
+  const filteredEndCities = cities.filter(city => 
+    city.name.toLowerCase().includes(endSearch.toLowerCase())
+  );
 
   // Create a graph from the cities (using straight-line distances)
   const createGraph = (): Graph => {
@@ -149,9 +168,6 @@ export function PathfindingControls({ onPathFound, cities }: PathfindingControls
 
     if (path) {
       const time = distance / 60; // Assuming average speed of 60 km/h
-      setTotalDistance(distance);
-      setEstimatedTime(time);
-      setNodesExplored(explored);
       onPathFound(path, distance, explored, algorithm);
     } else {
       alert('No path found!');
@@ -179,35 +195,111 @@ export function PathfindingControls({ onPathFound, cities }: PathfindingControls
     return `${wholeHours}h ${minutes}min`;
   };
 
+  const calculateEstimatedTime = (distance: number): number => {
+    return distance / 60; // Assuming average speed of 60 km/h
+  };
+
+  useEffect(() => {
+    if (algorithmType === 'astar' && roadDistance > 0) {
+      setEstimatedTime(calculateEstimatedTime(roadDistance));
+    } else {
+      setEstimatedTime(calculateEstimatedTime(totalDistance));
+    }
+  }, [algorithmType, roadDistance, totalDistance]);
+
   return (
-    <div className="fixed top-4 left-4 bg-white p-4 rounded-lg shadow-lg z-50">
+    <div className="fixed top-0 left-0 bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg z-[1000] w-[40vh]">
       <h2 className="text-lg font-bold mb-4">Pathfinding Controls</h2>
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700">Start City</label>
-          <select
-            value={startCity}
-            onChange={(e) => setStartCity(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option value="">Select start city</option>
-            {cities.map(city => (
-              <option key={city.name} value={city.name}>{city.name}</option>
-            ))}
-          </select>
+          <div className="relative">
+            {startCity ? (
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex-1 bg-blue-50 text-blue-700 px-3 py-2 rounded-md flex items-center justify-between">
+                  <span>{startCity}</span>
+                  <button
+                    onClick={() => {
+                      setStartCity('');
+                      setStartSearch('');
+                    }}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={startSearch}
+                onChange={(e) => setStartSearch(e.target.value)}
+                placeholder="Search start city..."
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            )}
+            {startSearch && !startCity && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {filteredStartCities.map(city => (
+                  <div
+                    key={city.name}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setStartCity(city.name);
+                      setStartSearch('');
+                    }}
+                  >
+                    {city.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">End City</label>
-          <select
-            value={endCity}
-            onChange={(e) => setEndCity(e.target.value)}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          >
-            <option value="">Select end city</option>
-            {cities.map(city => (
-              <option key={city.name} value={city.name}>{city.name}</option>
-            ))}
-          </select>
+          <div className="relative">
+            {endCity ? (
+              <div className="flex items-center gap-2 mt-1">
+                <div className="flex-1 bg-blue-50 text-blue-700 px-3 py-2 rounded-md flex items-center justify-between">
+                  <span>{endCity}</span>
+                  <button
+                    onClick={() => {
+                      setEndCity('');
+                      setEndSearch('');
+                    }}
+                    className="text-blue-500 hover:text-blue-700"
+                  >
+                    ×
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <input
+                type="text"
+                value={endSearch}
+                onChange={(e) => setEndSearch(e.target.value)}
+                placeholder="Search end city..."
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+              />
+            )}
+            {endSearch && !endCity && (
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto">
+                {filteredEndCities.map(city => (
+                  <div
+                    key={city.name}
+                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setEndCity(city.name);
+                      setEndSearch('');
+                    }}
+                  >
+                    {city.name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
         <div>
           <label className="block text-sm font-medium text-gray-700">Algorithm</label>
@@ -229,10 +321,17 @@ export function PathfindingControls({ onPathFound, cities }: PathfindingControls
         {totalDistance > 0 && (
           <div className="mt-4 p-3 bg-gray-50 rounded-md">
             <div className="text-sm text-gray-600">
-              <div className="flex justify-between mb-1">
-                <span>Total Distance:</span>
-                <span className="font-medium">{formatDistance(totalDistance)}</span>
-              </div>
+              {algorithmType === 'astar' ? (
+                <div className="flex justify-between mb-1">
+                  <span>Road Distance:</span>
+                  <span className="font-medium">{formatDistance(roadDistance)}</span>
+                </div>
+              ) : (
+                <div className="flex justify-between mb-1">
+                  <span>Straight-line Distance:</span>
+                  <span className="font-medium">{formatDistance(totalDistance)}</span>
+                </div>
+              )}
               <div className="flex justify-between mb-1">
                 <span>Estimated Time:</span>
                 <span className="font-medium">{formatTime(estimatedTime)}</span>
