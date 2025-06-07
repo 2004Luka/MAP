@@ -3,91 +3,7 @@ import 'leaflet/dist/leaflet.css';
 import { useState, useEffect } from 'react';
 import { PathfindingControls } from './components/PathfindingControls';
 import L from 'leaflet';
-
-const cities = [
-  // Major Cities
-  { name: 'Tbilisi', lat: 41.7151, lng: 44.8271 },
-  { name: 'Kutaisi', lat: 42.2500, lng: 42.7000 },
-  { name: 'Batumi', lat: 41.6168, lng: 41.6367 },
-  { name: 'Rustavi', lat: 41.5495, lng: 45.0360 },
-  { name: 'Zugdidi', lat: 42.5126, lng: 41.8709 },
-  { name: 'Gori', lat: 41.9844, lng: 44.1125 },
-  { name: 'Telavi', lat: 41.9192, lng: 45.4736 },
-  { name: 'Akhaltsikhe', lat: 41.6396, lng: 42.9826 },
-  { name: 'Poti', lat: 42.1466, lng: 41.6710 },
-  { name: 'Samtredia', lat: 42.1531, lng: 42.3358 },
-  { name: 'Marneuli', lat: 41.4750, lng: 44.8100 },
-  { name: 'Ozurgeti', lat: 41.9244, lng: 42.0006 },
-  { name: 'Khashuri', lat: 41.9931, lng: 43.6021 },
-  { name: 'Senaki', lat: 42.2706, lng: 42.0644 },
-  { name: 'Kaspi', lat: 41.9194, lng: 44.4231 },
-  { name: 'Chiatura', lat: 42.2897, lng: 43.2936 },
-  { name: 'Gardabani', lat: 41.4622, lng: 45.0947 },
-  { name: 'Tskaltubo', lat: 42.3222, lng: 42.6000 },
-  { name: 'Sagarejo', lat: 41.7361, lng: 45.3300 },
-  { name: 'Mtskheta', lat: 41.8450, lng: 44.7200 },
-  
-  // Additional Cities and Towns
-  { name: 'Bolnisi', lat: 41.4472, lng: 44.5389 },
-  { name: 'Kobuleti', lat: 41.8200, lng: 41.7750 },
-  { name: 'Zestaponi', lat: 42.1100, lng: 43.0400 },
-  { name: 'Gurjaani', lat: 41.7439, lng: 45.8000 },
-  { name: 'Kvareli', lat: 41.9500, lng: 45.8167 },
-  { name: 'Akhmeta', lat: 42.0333, lng: 45.2000 },
-  { name: 'Dusheti', lat: 42.0833, lng: 44.7000 },
-  { name: 'Tianeti', lat: 42.1167, lng: 44.9667 },
-  { name: 'Manglisi', lat: 41.7000, lng: 44.3833 },
-  { name: 'Tetritskaro', lat: 41.5500, lng: 44.4667 },
-  { name: 'Dmanisi', lat: 41.3333, lng: 44.2000 },
-  { name: 'Tsalka', lat: 41.6000, lng: 44.0833 },
-  { name: 'Ninotsminda', lat: 41.2667, lng: 43.5833 },
-  { name: 'Akhalkalaki', lat: 41.4000, lng: 43.4833 },
-  { name: 'Aspindza', lat: 41.5667, lng: 43.2500 },
-  { name: 'Borjomi', lat: 41.8500, lng: 43.4000 },
-  { name: 'Bakuriani', lat: 41.7333, lng: 43.4833 },
-  { name: 'Ambrolauri', lat: 42.5167, lng: 43.1500 },
-  { name: 'Oni', lat: 42.5833, lng: 43.4500 },
-  { name: 'Lentekhi', lat: 42.7833, lng: 42.7167 },
-  { name: 'Mestia', lat: 43.0500, lng: 42.7167 },
-  { name: 'Abasha', lat: 42.2000, lng: 42.2000 },
-  { name: 'Khoni', lat: 42.3167, lng: 42.4167 },
-  { name: 'Tkibuli', lat: 42.3500, lng: 42.9833 },
-  { name: 'Terjola', lat: 42.1833, lng: 43.0000 },
-  { name: 'Vani', lat: 42.0833, lng: 42.5167 },
-  { name: 'Baghdati', lat: 42.0667, lng: 42.8167 },
-  { name: 'Kharagauli', lat: 42.0167, lng: 43.2000 },
-  
-  // Additional Towns and Settlements
-  { name: 'Lagodekhi', lat: 41.8167, lng: 46.2667 },
-  { name: 'Dedoplistskaro', lat: 41.4667, lng: 46.1167 },
-  { name: 'Sighnaghi', lat: 41.6167, lng: 45.9167 },
-  { name: 'Tsnori', lat: 41.6167, lng: 45.9667 },
-  { name: 'Tsinandali', lat: 41.9000, lng: 45.5667 },
-  { name: 'Pshaveli', lat: 42.0167, lng: 45.4833 },
-  { name: 'Omalo', lat: 42.3833, lng: 45.6333 },
-  { name: 'Shatili', lat: 42.6667, lng: 45.1667 },
-  { name: 'Ananuri', lat: 42.1667, lng: 44.7000 },
-  { name: 'Pasanauri', lat: 42.3500, lng: 44.6833 },
-  { name: 'Gudauri', lat: 42.4833, lng: 44.4833 },
-  { name: 'Stepantsminda', lat: 42.6500, lng: 44.6500 },
-  { name: 'Jvari', lat: 42.7167, lng: 42.0500 },
-  { name: 'Tsalenjikha', lat: 42.5833, lng: 42.0667 },
-  { name: 'Chkhorotsku', lat: 42.5167, lng: 42.1167 },
-  { name: 'Martvili', lat: 42.4167, lng: 42.3667 },
-  { name: 'Khobi', lat: 42.3167, lng: 41.9000 },
-  { name: 'Anaklia', lat: 42.4000, lng: 41.5667 },
-  { name: 'Ganmukhuri', lat: 42.3500, lng: 41.7167 },
-  { name: 'Ureki', lat: 41.9833, lng: 41.7667 },
-  { name: 'Chakvi', lat: 41.7167, lng: 41.7333 },
-  { name: 'Keda', lat: 41.6000, lng: 41.9500 },
-  { name: 'Shuakhevi', lat: 41.6333, lng: 42.1833 },
-  { name: 'Khulo', lat: 41.6500, lng: 42.3167 },
-  { name: 'Adigeni', lat: 41.6833, lng: 42.7000 },
-  { name: 'Akhaldaba', lat: 41.6500, lng: 43.4833 },
-  { name: 'Tsaghveri', lat: 41.8000, lng: 43.4833 },
-  { name: 'Surami', lat: 42.0167, lng: 43.5500 },
-  { name: 'Kareli', lat: 42.0167, lng: 43.9000 }
-];
+import { cities } from './data/cities';
 
 // Optional: Fit map to bounds dynamically
 function FitBounds() {
@@ -221,6 +137,7 @@ export default function Map() {
           >
             <Popup>
               <div className="text-sm font-medium">{city.name}</div>
+              <div className="text-xs text-gray-500">{city.region}</div>
             </Popup>
           </CircleMarker>
         ))}

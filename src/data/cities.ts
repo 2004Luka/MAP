@@ -1,0 +1,146 @@
+export interface City {
+  name: string;
+  lat: number;
+  lng: number;
+  region?: string;
+}
+
+export const cities: City[] = [
+  // Tbilisi Region
+  { name: 'Tbilisi', lat: 41.7151, lng: 44.8271, region: 'Tbilisi' },
+  { name: 'Rustavi', lat: 41.5495, lng: 45.0360, region: 'Kvemo Kartli' },
+  { name: 'Gardabani', lat: 41.4622, lng: 45.0947, region: 'Kvemo Kartli' },
+  { name: 'Marneuli', lat: 41.4750, lng: 44.8100, region: 'Kvemo Kartli' },
+  { name: 'Bolnisi', lat: 41.4472, lng: 44.5389, region: 'Kvemo Kartli' },
+  { name: 'Dmanisi', lat: 41.3333, lng: 44.2000, region: 'Kvemo Kartli' },
+  { name: 'Tetritskaro', lat: 41.5500, lng: 44.4667, region: 'Kvemo Kartli' },
+  { name: 'Manglisi', lat: 41.7000, lng: 44.3833, region: 'Kvemo Kartli' },
+  { name: 'Tsalka', lat: 41.6000, lng: 44.0833, region: 'Kvemo Kartli' },
+
+  // Abkhazia Region
+  { name: 'Sokhumi', lat: 43.0015, lng: 41.0234, region: 'Abkhazia' },
+  { name: 'Gagra', lat: 43.3288, lng: 40.2239, region: 'Abkhazia' },
+  { name: 'Gudauta', lat: 43.1055, lng: 40.6207, region: 'Abkhazia' },
+  { name: 'Ochamchire', lat: 42.7122, lng: 41.4686, region: 'Abkhazia' },
+  { name: 'Tkvarcheli', lat: 42.8500, lng: 41.6833, region: 'Abkhazia' },
+  { name: 'Gali', lat: 42.6333, lng: 41.7333, region: 'Abkhazia' },
+  { name: 'Pitsunda', lat: 43.1667, lng: 40.3333, region: 'Abkhazia' },
+  { name: 'New Athos', lat: 43.0833, lng: 40.8167, region: 'Abkhazia' },
+  { name: 'Bzyb', lat: 43.2167, lng: 40.3333, region: 'Abkhazia' },
+  { name: 'Gulripshi', lat: 43.1000, lng: 41.3833, region: 'Abkhazia' },
+  { name: 'Mokvi', lat: 42.7167, lng: 41.5167, region: 'Abkhazia' },
+  { name: 'Baghmarani', lat: 42.8333, lng: 41.6833, region: 'Abkhazia' },
+
+  // South Ossetia (Tskhinvali Region)
+  { name: 'Tskhinvali', lat: 42.2256, lng: 43.9700, region: 'South Ossetia' },
+  { name: 'Java', lat: 42.4000, lng: 43.9333, region: 'South Ossetia' },
+  { name: 'Kvaisi', lat: 42.5167, lng: 43.6333, region: 'South Ossetia' },
+  { name: 'Kornisi', lat: 42.2667, lng: 43.8167, region: 'South Ossetia' },
+  { name: 'Leningori', lat: 42.1333, lng: 44.4833, region: 'South Ossetia' },
+  { name: 'Znauri', lat: 42.1833, lng: 43.7667, region: 'South Ossetia' },
+  { name: 'Eredvi', lat: 42.1833, lng: 43.9167, region: 'South Ossetia' },
+  { name: 'Dzau', lat: 42.4500, lng: 43.9333, region: 'South Ossetia' },
+  { name: 'Khetagurovo', lat: 42.2333, lng: 43.8167, region: 'South Ossetia' },
+  { name: 'Kekhvi (South Ossetia)', lat: 42.2833, lng: 43.9833, region: 'South Ossetia' },
+  { name: 'Kvemo Achabeti', lat: 42.2333, lng: 43.8500, region: 'South Ossetia' },
+  { name: 'Zemo Achabeti', lat: 42.2500, lng: 43.8500, region: 'South Ossetia' },
+  { name: 'Tamarasheni', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Nikozi', lat: 42.2000, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Prisi', lat: 42.2333, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Satikari', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Tsinagar', lat: 42.2333, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Vanati', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Zemo Nikozi', lat: 42.2000, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Zemo Prisi', lat: 42.2333, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Zemo Satikari', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Zemo Tsinagar', lat: 42.2333, lng: 43.9667, region: 'South Ossetia' },
+  { name: 'Zemo Vanati', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
+
+  // Kakheti Region
+  { name: 'Telavi', lat: 41.9192, lng: 45.4736, region: 'Kakheti' },
+  { name: 'Gurjaani', lat: 41.7439, lng: 45.8000, region: 'Kakheti' },
+  { name: 'Sagarejo', lat: 41.7361, lng: 45.3300, region: 'Kakheti' },
+  { name: 'Dedoplistskaro', lat: 41.4667, lng: 46.1167, region: 'Kakheti' },
+  { name: 'Lagodekhi', lat: 41.8167, lng: 46.2667, region: 'Kakheti' },
+  { name: 'Sighnaghi', lat: 41.6167, lng: 45.9167, region: 'Kakheti' },
+  { name: 'Tsnori', lat: 41.6167, lng: 45.9667, region: 'Kakheti' },
+  { name: 'Kvareli', lat: 41.9500, lng: 45.8167, region: 'Kakheti' },
+  { name: 'Tsinandali', lat: 41.9000, lng: 45.5667, region: 'Kakheti' },
+  { name: 'Akhmeta', lat: 42.0333, lng: 45.2000, region: 'Kakheti' },
+  { name: 'Pshaveli', lat: 42.0167, lng: 45.4833, region: 'Kakheti' },
+  { name: 'Omalo', lat: 42.3833, lng: 45.6333, region: 'Kakheti' },
+  { name: 'Shatili', lat: 42.6667, lng: 45.1667, region: 'Kakheti' },
+
+  // Mtskheta-Mtianeti Region
+  { name: 'Mtskheta', lat: 41.8450, lng: 44.7200, region: 'Mtskheta-Mtianeti' },
+  { name: 'Dusheti', lat: 42.0833, lng: 44.7000, region: 'Mtskheta-Mtianeti' },
+  { name: 'Tianeti', lat: 42.1167, lng: 44.9667, region: 'Mtskheta-Mtianeti' },
+  { name: 'Ananuri', lat: 42.1667, lng: 44.7000, region: 'Mtskheta-Mtianeti' },
+  { name: 'Pasanauri', lat: 42.3500, lng: 44.6833, region: 'Mtskheta-Mtianeti' },
+  { name: 'Gudauri', lat: 42.4833, lng: 44.4833, region: 'Mtskheta-Mtianeti' },
+  { name: 'Stepantsminda', lat: 42.6500, lng: 44.6500, region: 'Mtskheta-Mtianeti' },
+
+  // Samtskhe-Javakheti Region
+  { name: 'Akhaltsikhe', lat: 41.6396, lng: 42.9826, region: 'Samtskhe-Javakheti' },
+  { name: 'Aspindza', lat: 41.5667, lng: 43.2500, region: 'Samtskhe-Javakheti' },
+  { name: 'Borjomi', lat: 41.8500, lng: 43.4000, region: 'Samtskhe-Javakheti' },
+  { name: 'Bakuriani', lat: 41.7333, lng: 43.4833, region: 'Samtskhe-Javakheti' },
+  { name: 'Tsaghveri', lat: 41.8000, lng: 43.4833, region: 'Samtskhe-Javakheti' },
+  { name: 'Ninotsminda', lat: 41.2667, lng: 43.5833, region: 'Samtskhe-Javakheti' },
+  { name: 'Akhalkalaki', lat: 41.4000, lng: 43.4833, region: 'Samtskhe-Javakheti' },
+
+  // Shida Kartli Region
+  { name: 'Gori', lat: 41.9844, lng: 44.1125, region: 'Shida Kartli' },
+  { name: 'Kaspi', lat: 41.9194, lng: 44.4231, region: 'Shida Kartli' },
+  { name: 'Khashuri', lat: 41.9931, lng: 43.6021, region: 'Shida Kartli' },
+  { name: 'Surami', lat: 42.0167, lng: 43.5500, region: 'Shida Kartli' },
+  { name: 'Kareli', lat: 42.0167, lng: 43.9000, region: 'Shida Kartli' },
+
+  // Imereti Region
+  { name: 'Kutaisi', lat: 42.2500, lng: 42.7000, region: 'Imereti' },
+  { name: 'Samtredia', lat: 42.1531, lng: 42.3358, region: 'Imereti' },
+  { name: 'Tkibuli', lat: 42.3500, lng: 42.9833, region: 'Imereti' },
+  { name: 'Chiatura', lat: 42.2897, lng: 43.2936, region: 'Imereti' },
+  { name: 'Zestaponi', lat: 42.1100, lng: 43.0400, region: 'Imereti' },
+  { name: 'Terjola', lat: 42.1833, lng: 43.0000, region: 'Imereti' },
+  { name: 'Vani', lat: 42.0833, lng: 42.5167, region: 'Imereti' },
+  { name: 'Baghdati', lat: 42.0667, lng: 42.8167, region: 'Imereti' },
+  { name: 'Kharagauli', lat: 42.0167, lng: 43.2000, region: 'Imereti' },
+  { name: 'Sachkhere', lat: 42.3333, lng: 43.4000, region: 'Imereti' },
+  { name: 'Khoni', lat: 42.3167, lng: 42.4167, region: 'Imereti' },
+  { name: 'Abasha', lat: 42.2000, lng: 42.2000, region: 'Imereti' },
+
+  // Samegrelo-Zemo Svaneti Region
+  { name: 'Zugdidi', lat: 42.5126, lng: 41.8709, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Senaki', lat: 42.2706, lng: 42.0644, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Poti', lat: 42.1466, lng: 41.6710, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Anaklia', lat: 42.4000, lng: 41.5667, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Ganmukhuri', lat: 42.3500, lng: 41.7167, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Jvari', lat: 42.7167, lng: 42.0500, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Tsalenjikha', lat: 42.5833, lng: 42.0667, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Chkhorotsku (Samegrelo)', lat: 42.5167, lng: 42.1167, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Martvili', lat: 42.4167, lng: 42.3667, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Khobi', lat: 42.3167, lng: 41.9000, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Mestia', lat: 43.0500, lng: 42.7167, region: 'Samegrelo-Zemo Svaneti' },
+  { name: 'Lentekhi (Samegrelo)', lat: 42.7833, lng: 42.7167, region: 'Samegrelo-Zemo Svaneti' },
+
+  // Guria Region
+  { name: 'Ozurgeti', lat: 41.9244, lng: 42.0006, region: 'Guria' },
+  { name: 'Lanchkhuti', lat: 42.0833, lng: 42.0333, region: 'Guria' },
+  { name: 'Chokhatauri', lat: 42.0167, lng: 42.3167, region: 'Guria' },
+  { name: 'Ureki', lat: 41.9833, lng: 41.7667, region: 'Guria' },
+
+  // Adjara Region
+  { name: 'Batumi', lat: 41.6168, lng: 41.6367, region: 'Adjara' },
+  { name: 'Kobuleti', lat: 41.8200, lng: 41.7750, region: 'Adjara' },
+  { name: 'Chakvi', lat: 41.7167, lng: 41.7333, region: 'Adjara' },
+  { name: 'Keda', lat: 41.6000, lng: 41.9500, region: 'Adjara' },
+  { name: 'Shuakhevi', lat: 41.6333, lng: 42.1833, region: 'Adjara' },
+  { name: 'Khulo', lat: 41.6500, lng: 42.3167, region: 'Adjara' },
+
+  // Racha-Lechkhumi and Kvemo Svaneti Region
+  { name: 'Ambrolauri', lat: 42.5167, lng: 43.1500, region: 'Racha-Lechkhumi and Kvemo Svaneti' },
+  { name: 'Oni', lat: 42.5833, lng: 43.4500, region: 'Racha-Lechkhumi and Kvemo Svaneti' },
+  { name: 'Tsageri', lat: 42.6500, lng: 42.7667, region: 'Racha-Lechkhumi and Kvemo Svaneti' },
+  { name: 'Lentekhi (Racha)', lat: 42.7833, lng: 42.7167, region: 'Racha-Lechkhumi and Kvemo Svaneti' }
+]; 
