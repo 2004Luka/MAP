@@ -7,7 +7,7 @@ import { AlgorithmSelect } from './AlgorithmSelect';
 import { PathResults } from './PathResults';
 
 interface PathfindingControlsProps {
-  onPathFound: (path: string[], distance: number, explored: number, algorithm: AlgorithmType) => void;
+  onPathFound: (path: string[], explored: number, algorithm: AlgorithmType) => void;
   onAlgorithmChange: (algorithm: AlgorithmType) => void;
   cities: City[];
   algorithmType: AlgorithmType;
@@ -41,7 +41,7 @@ export const PathfindingControls = ({
       result = iddfs(graph, startCity.name, endCity.name);
     }
 
-    onPathFound(result.path, result.distance, result.nodesExplored, result.algorithm);
+    onPathFound(result.path, result.nodesExplored, result.algorithm);
   };
 
   const handleClear = () => {

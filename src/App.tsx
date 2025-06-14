@@ -38,7 +38,6 @@ function App() {
 
   const handlePathFound = (
     path: string[],
-    distance: number,
     explored: number,
     algorithm: AlgorithmType
   ) => {
