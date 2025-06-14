@@ -1,4 +1,4 @@
-import type { Graph, Heuristic, AlgorithmType, PathfindingResult } from '../types';
+import type { Graph, Heuristic, PathfindingResult } from '../types';
 
 // ===== A* ALGORITHM =====
 

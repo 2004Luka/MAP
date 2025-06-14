@@ -1,4 +1,4 @@
-import type { City, Graph, Heuristic, AlgorithmType, PathfindingResult } from '../types';
+import type { City, Graph, Heuristic } from '../types';
 
 export const calculateDistance = (city1: City, city2: City): number => {
   const R = 6371; // Earth's radius in km

@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Marker, Polyline } from 'react-leaflet';
 import type { City } from './types';
 import type { AlgorithmType } from './types';
