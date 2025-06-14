@@ -6,7 +6,6 @@ export interface City {
 }
 
 export const cities: City[] = [
-  // Tbilisi Region
   { name: 'Tbilisi', lat: 41.7151, lng: 44.8271, region: 'Tbilisi' },
   { name: 'Rustavi', lat: 41.5495, lng: 45.0360, region: 'Kvemo Kartli' },
   { name: 'Gardabani', lat: 41.4622, lng: 45.0947, region: 'Kvemo Kartli' },
@@ -17,7 +16,6 @@ export const cities: City[] = [
   { name: 'Manglisi', lat: 41.7000, lng: 44.3833, region: 'Kvemo Kartli' },
   { name: 'Tsalka', lat: 41.6000, lng: 44.0833, region: 'Kvemo Kartli' },
 
-  // Abkhazia Region
   { name: 'Sokhumi', lat: 43.0015, lng: 41.0234, region: 'Abkhazia' },
   { name: 'Gagra', lat: 43.3288, lng: 40.2239, region: 'Abkhazia' },
   { name: 'Gudauta', lat: 43.1055, lng: 40.6207, region: 'Abkhazia' },
@@ -31,7 +29,6 @@ export const cities: City[] = [
   { name: 'Mokvi', lat: 42.7167, lng: 41.5167, region: 'Abkhazia' },
   { name: 'Baghmarani', lat: 42.8333, lng: 41.6833, region: 'Abkhazia' },
 
-  // South Ossetia (Tskhinvali Region)
   { name: 'Tskhinvali', lat: 42.2256, lng: 43.9700, region: 'South Ossetia' },
   { name: 'Java', lat: 42.4000, lng: 43.9333, region: 'South Ossetia' },
   { name: 'Kvaisi', lat: 42.5167, lng: 43.6333, region: 'South Ossetia' },
@@ -56,7 +53,6 @@ export const cities: City[] = [
   { name: 'Zemo Tsinagar', lat: 42.2333, lng: 43.9667, region: 'South Ossetia' },
   { name: 'Zemo Vanati', lat: 42.2167, lng: 43.9667, region: 'South Ossetia' },
 
-  // Kakheti Region
   { name: 'Telavi', lat: 41.9192, lng: 45.4736, region: 'Kakheti' },
   { name: 'Gurjaani', lat: 41.7439, lng: 45.8000, region: 'Kakheti' },
   { name: 'Sagarejo', lat: 41.7361, lng: 45.3300, region: 'Kakheti' },
@@ -71,7 +67,6 @@ export const cities: City[] = [
   { name: 'Omalo', lat: 42.3833, lng: 45.6333, region: 'Kakheti' },
   { name: 'Shatili', lat: 42.6667, lng: 45.1667, region: 'Kakheti' },
 
-  // Mtskheta-Mtianeti Region
   { name: 'Mtskheta', lat: 41.8450, lng: 44.7200, region: 'Mtskheta-Mtianeti' },
   { name: 'Dusheti', lat: 42.0833, lng: 44.7000, region: 'Mtskheta-Mtianeti' },
   { name: 'Tianeti', lat: 42.1167, lng: 44.9667, region: 'Mtskheta-Mtianeti' },
@@ -80,7 +75,6 @@ export const cities: City[] = [
   { name: 'Gudauri', lat: 42.4833, lng: 44.4833, region: 'Mtskheta-Mtianeti' },
   { name: 'Stepantsminda', lat: 42.6500, lng: 44.6500, region: 'Mtskheta-Mtianeti' },
 
-  // Samtskhe-Javakheti Region
   { name: 'Akhaltsikhe', lat: 41.6396, lng: 42.9826, region: 'Samtskhe-Javakheti' },
   { name: 'Aspindza', lat: 41.5667, lng: 43.2500, region: 'Samtskhe-Javakheti' },
   { name: 'Borjomi', lat: 41.8500, lng: 43.4000, region: 'Samtskhe-Javakheti' },
@@ -89,14 +83,12 @@ export const cities: City[] = [
   { name: 'Ninotsminda', lat: 41.2667, lng: 43.5833, region: 'Samtskhe-Javakheti' },
   { name: 'Akhalkalaki', lat: 41.4000, lng: 43.4833, region: 'Samtskhe-Javakheti' },
 
-  // Shida Kartli Region
   { name: 'Gori', lat: 41.9844, lng: 44.1125, region: 'Shida Kartli' },
   { name: 'Kaspi', lat: 41.9194, lng: 44.4231, region: 'Shida Kartli' },
   { name: 'Khashuri', lat: 41.9931, lng: 43.6021, region: 'Shida Kartli' },
   { name: 'Surami', lat: 42.0167, lng: 43.5500, region: 'Shida Kartli' },
   { name: 'Kareli', lat: 42.0167, lng: 43.9000, region: 'Shida Kartli' },
 
-  // Imereti Region
   { name: 'Kutaisi', lat: 42.2500, lng: 42.7000, region: 'Imereti' },
   { name: 'Samtredia', lat: 42.1531, lng: 42.3358, region: 'Imereti' },
   { name: 'Tkibuli', lat: 42.3500, lng: 42.9833, region: 'Imereti' },
@@ -110,7 +102,6 @@ export const cities: City[] = [
   { name: 'Khoni', lat: 42.3167, lng: 42.4167, region: 'Imereti' },
   { name: 'Abasha', lat: 42.2000, lng: 42.2000, region: 'Imereti' },
 
-  // Samegrelo-Zemo Svaneti Region
   { name: 'Zugdidi', lat: 42.5126, lng: 41.8709, region: 'Samegrelo-Zemo Svaneti' },
   { name: 'Senaki', lat: 42.2706, lng: 42.0644, region: 'Samegrelo-Zemo Svaneti' },
   { name: 'Poti', lat: 42.1466, lng: 41.6710, region: 'Samegrelo-Zemo Svaneti' },
@@ -124,13 +115,11 @@ export const cities: City[] = [
   { name: 'Mestia', lat: 43.0500, lng: 42.7167, region: 'Samegrelo-Zemo Svaneti' },
   { name: 'Lentekhi (Samegrelo)', lat: 42.7833, lng: 42.7167, region: 'Samegrelo-Zemo Svaneti' },
 
-  // Guria Region
   { name: 'Ozurgeti', lat: 41.9244, lng: 42.0006, region: 'Guria' },
   { name: 'Lanchkhuti', lat: 42.0833, lng: 42.0333, region: 'Guria' },
   { name: 'Chokhatauri', lat: 42.0167, lng: 42.3167, region: 'Guria' },
   { name: 'Ureki', lat: 41.9833, lng: 41.7667, region: 'Guria' },
 
-  // Adjara Region
   { name: 'Batumi', lat: 41.6168, lng: 41.6367, region: 'Adjara' },
   { name: 'Kobuleti', lat: 41.8200, lng: 41.7750, region: 'Adjara' },
   { name: 'Chakvi', lat: 41.7167, lng: 41.7333, region: 'Adjara' },
@@ -138,7 +127,6 @@ export const cities: City[] = [
   { name: 'Shuakhevi', lat: 41.6333, lng: 42.1833, region: 'Adjara' },
   { name: 'Khulo', lat: 41.6500, lng: 42.3167, region: 'Adjara' },
 
-  // Racha-Lechkhumi and Kvemo Svaneti Region
   { name: 'Ambrolauri', lat: 42.5167, lng: 43.1500, region: 'Racha-Lechkhumi and Kvemo Svaneti' },
   { name: 'Oni', lat: 42.5833, lng: 43.4500, region: 'Racha-Lechkhumi and Kvemo Svaneti' },
   { name: 'Tsageri', lat: 42.6500, lng: 42.7667, region: 'Racha-Lechkhumi and Kvemo Svaneti' },

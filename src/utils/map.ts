@@ -21,11 +21,11 @@ export const getBoundsFromCities = (cities: City[]): L.LatLngBounds => {
 export const getPathColor = (algorithm: string): string => {
   switch (algorithm) {
     case 'astar':
-      return '#2563eb'; // Blue
+      return '#2563eb'; 
     case 'iddfs':
-      return '#16a34a'; // Green
+      return '#16a34a'; 
     default:
-      return '#6b7280'; // Gray
+      return '#6b7280'; 
   }
 };
 

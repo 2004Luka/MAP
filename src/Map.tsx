@@ -50,7 +50,6 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
           url={`https://{s}.basemaps.cartocdn.com/${mapStyle}/{z}/{x}/{y}{r}.png`}
         />
         
-        {/* All cities */}
         {cities.map((city) => (
           <CircleMarker
             key={city.name}
@@ -66,7 +65,6 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
           />
         ))}
 
-        {/* Selected cities */}
         {selectedCities.map((city, index) => (
           <Marker
             key={city.name}
@@ -75,10 +73,8 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
           />
         ))}
 
-        {/* Path visualization */}
         {path.length > 0 && (
           <>
-            {/* Straight line path (only for IDDFS) */}
             {algorithm === 'iddfs' && (
               <Polyline
                 positions={getPathCoordinates(path)}
@@ -91,7 +87,6 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
               />
             )}
             
-            {/* Road route (only for A*) */}
             {algorithm === 'astar' && roadRoute.length > 0 && (
               <Polyline
                 positions={roadRoute}

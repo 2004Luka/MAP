@@ -8,7 +8,6 @@ import type { City, AlgorithmType } from './types'
 import { calculatePathDistance, createGraph } from './utils/pathfinding'
 
 function App() {
-  // Load from cookies if present
   const cookieStart = Cookies.get('startCity')
   const cookieEnd = Cookies.get('endCity')
   const cookieSettings = Cookies.get('geoSettings')
@@ -22,12 +21,10 @@ function App() {
   const [roadDistance, setRoadDistance] = useState<number>(0)
   const [nodesExplored, setNodesExplored] = useState<number>(0)
   const [roadRoute, setRoadRoute] = useState<[number, number][]>([])
-  // Settings state
   const [mapStyle, setMapStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).mapStyle : 'light_all')
   const [markerStyle, setMarkerStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).markerStyle : { size: 4, color: '#6B7280' })
   const [routeStyle, setRouteStyle] = useState(cookieSettings ? JSON.parse(cookieSettings).routeStyle : { weight: 3, color: '#3B82F6', opacity: 0.8 })
 
-  // Save to cookies on change
   useEffect(() => {
     if (selectedCities[0]) Cookies.set('startCity', selectedCities[0].name)
     if (selectedCities[1]) Cookies.set('endCity', selectedCities[1].name)
@@ -45,7 +42,6 @@ function App() {
     setNodesExplored(explored)
     setAlgorithm(algorithm)
 
-    // Update selected cities based on the path
     if (path.length > 0) {
       const startCity = cities.find(city => city.name === path[0])
       const endCity = cities.find(city => city.name === path[path.length - 1])
@@ -57,12 +53,9 @@ function App() {
     }
 
     if (algorithm === 'astar') {
-      // For A*, only use road distance
-      setTotalDistance(0) // Will be updated when road route is fetched
-      // Fetch road route for A* algorithm
+      setTotalDistance(0) 
       fetchRoadRoute(path)
     } else {
-      // For IDDFS, use straight-line distance
       const graph = createGraph(cities)
       const straightLineDistance = calculatePathDistance(path, graph)
       setTotalDistance(straightLineDistance)
@@ -73,7 +66,6 @@ function App() {
 
   const handleAlgorithmChange = (newAlgorithm: AlgorithmType) => {
     setAlgorithm(newAlgorithm)
-    // Clear previous results when changing algorithm
     setPath([])
     setTotalDistance(0)
     setRoadDistance(0)
@@ -95,14 +87,12 @@ function App() {
       const data = await response.json()
 
       if (data.routes && data.routes[0]) {
-        // Calculate road distance from the route
-        const roadDist = data.routes[0].distance / 1000 // Convert meters to kilometers
+        const roadDist = data.routes[0].distance / 1000
         setRoadDistance(roadDist)
-        setTotalDistance(roadDist) // Use road distance as total distance for A*
+        setTotalDistance(roadDist)
         
-        // Extract road route coordinates
         const routeCoordinates = data.routes[0].geometry.coordinates.map((coord: number[]) => 
-          [coord[1], coord[0]] as [number, number] // Convert [lng, lat] to [lat, lng]
+          [coord[1], coord[0]] as [number, number] 
         )
         setRoadRoute(routeCoordinates)
       }
