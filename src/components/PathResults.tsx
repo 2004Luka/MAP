@@ -22,19 +22,19 @@ export const PathResults = ({
     <div className="animate-bounce-in">
       <div className="bg-primary-50 text-primary-900 border border-primary-200 rounded-lg p-4 space-y-3 dark:bg-gray-800 dark:text-white dark:border-gray-700">
         <div className="flex items-center gap-2 mb-3">
-          <div className="w-2 h-2 bg-primary-500 rounded-full dark:bg-blue-400"></div>
-          <h3 className="font-semibold text-primary-900 dark:text-blue-100">Path Results</h3>
+          <div className="w-2 h-2 bg-primary-500 rounded-full dark:bg-primary-400"></div>
+          <h3 className="font-semibold text-primary-900 dark:text-primary-100">Path Results</h3>
         </div>
         <div className="space-y-2.5">
           {algorithmType === 'iddfs' && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <svg className="w-4 h-4 text-primary-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-1.447-.894L15 4m0 13V4m0 0L9 7" />
                 </svg>
-                <span className="text-sm font-medium text-primary-800 dark:text-blue-200">Total Distance:</span>
+                <span className="text-sm font-medium text-primary-800 dark:text-primary-200">Total Distance:</span>
               </div>
-              <span className="text-sm font-semibold text-primary-900 dark:text-blue-100">{formatDistance(totalDistance)}</span>
+              <span className="text-sm font-semibold text-primary-900 dark:text-primary-100">{formatDistance(totalDistance)}</span>
             </div>
           )}
           {algorithmType === 'astar' && roadDistance > 0 && (

@@ -23,10 +23,8 @@ function App() {
   const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#3B82F6', opacity: 0.8 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  // Derive dark mode from mapStyle - only dark_all should trigger dark mode
   const isDark = mapStyle === 'dark_all';
 
-  // Set dark class on html for Tailwind dark mode
   useEffect(() => {
     if (mapStyle === 'dark_all') {
       document.documentElement.classList.add('dark');

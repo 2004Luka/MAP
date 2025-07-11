@@ -220,23 +220,7 @@
   }
 }
 
-/* Mobile sidebar specific styles */
-@media (max-width: 1023px) {
-  /* Prevent body scroll when sidebar is open */
-  body.sidebar-open {
-    overflow: hidden;
-  }
-  
-  /* Smooth sidebar animation */
-  .sidebar-transition {
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  }
-  
-  /* Mobile overlay animation */
-  .sidebar-overlay {
-    transition: opacity 0.3s ease;
-  }
-}
+
 
 /* Tablet responsive adjustments */
 @media (min-width: 768px) and (max-width: 1023px) {
@@ -262,31 +246,4 @@
   display: none; /* Chrome, Safari and Opera */
 }
 
-/* Enhanced tooltip positioning */
-.tooltip-arrow {
-  position: absolute;
-  width: 0;
-  height: 0;
-  border: 5px solid transparent;
-}
 
-.tooltip-arrow.top {
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-top-color: #111827;
-}
-
-.tooltip-arrow.bottom {
-  top: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-bottom-color: #111827;
-}
-
-/* Enhanced focus ring for better accessibility */
-.focus-ring:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}

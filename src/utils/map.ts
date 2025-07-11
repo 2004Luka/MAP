@@ -39,35 +39,4 @@ export const getBoundsFromCities = (cities: City[]): L.LatLngBounds => {
   return bounds;
 };
 
-export const getPathColor = (algorithm: string): string => {
-  switch (algorithm) {
-    case 'astar':
-      return '#3B82F6'; // primary-500
-    case 'iddfs':
-      return '#22C55E'; // success-500
-    default:
-      return '#64748B'; // secondary-500
-  }
-};
-
-export const getPathWeight = (algorithm: string): number => {
-  switch (algorithm) {
-    case 'astar':
-      return 4;
-    case 'iddfs':
-      return 3;
-    default:
-      return 2;
-  }
-};
-
-export const getPathOpacity = (algorithm: string): number => {
-  switch (algorithm) {
-    case 'astar':
-      return 0.8;
-    case 'iddfs':
-      return 0.6;
-    default:
-      return 0.5;
-  }
-}; 
+ 

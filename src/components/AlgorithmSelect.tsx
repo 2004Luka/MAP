@@ -3,13 +3,9 @@ import type { AlgorithmType } from '../types';
 interface AlgorithmSelectProps {
   value: AlgorithmType;
   onChange: (algorithm: AlgorithmType) => void;
-  isDark: boolean;
 }
 
-export const AlgorithmSelect = ({ value, onChange, isDark }: AlgorithmSelectProps) => {
-  const getThemeClasses = (baseClasses: string, darkClasses: string) => {
-    return `${baseClasses} ${isDark ? `${darkClasses} dark` : ''}`;
-  };
+export const AlgorithmSelect = ({ value, onChange }: AlgorithmSelectProps) => {
 
   return (
     <div className="animate-slide-up">
@@ -20,7 +16,7 @@ export const AlgorithmSelect = ({ value, onChange, isDark }: AlgorithmSelectProp
         <select
           value={value}
           onChange={(e) => onChange(e.target.value as AlgorithmType)}
-          className="input-field bg-white text-secondary-900 border border-secondary-200 appearance-none cursor-pointer pr-10 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+          className="input-field bg-white text-secondary-900 border border-secondary-200 appearance-none cursor-pointer pr-10 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:border-primary-500 focus:ring-primary-500 dark:focus:border-primary-500 dark:focus:ring-primary-500"
         >
           <option value="astar">A* Search</option>
           <option value="iddfs">Iterative Deepening DFS</option>

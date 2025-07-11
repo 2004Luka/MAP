@@ -17,9 +17,9 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
   const modalRef = useRef<HTMLDivElement>(null);
 
   const mapStyles = [
-    { name: 'Light', value: 'light_all', icon: '☀️' },
-    { name: 'Dark', value: 'dark_all', icon: '🌙' },
-    { name: 'Satellite', value: 'rastertiles/voyager', icon: '🛰️' },
+    { name: 'Light', value: 'light_all' },
+    { name: 'Dark', value: 'dark_all' },
+    { name: 'Satellite', value: 'rastertiles/voyager' },
   ];
 
   const markerSizes = [3, 4, 5, 6];
@@ -76,15 +76,13 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
     onRouteStyleChange(newStyle);
   };
 
-  const getThemeClasses = (baseClasses: string, darkClasses: string) => {
-    return `${baseClasses} ${isDark ? `${darkClasses} dark` : ''}`;
-  };
+
 
   return (
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="absolute top-6 right-6 z-[1000] glass p-3 rounded-full hover:bg-white/90 transition-all duration-200 transform hover:scale-110 active:scale-95 bg-white text-secondary-900 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700/90"
+        className="absolute top-5 right-5 z-[1000] glass p-3 rounded-lg hover:bg-white/90 transition-all duration-200 transform hover:scale-110 active:scale-95 bg-white text-secondary-900 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700/90"
         aria-label="Open settings"
       >
         <IoMdSettings className="w-6 h-6" />
@@ -126,11 +124,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       className={
                         "flex flex-col items-center gap-2 p-4 border-2 rounded-lg transition-all duration-200 transform " +
                         (isActive
-                          ? "border-primary-500 bg-primary-100 dark:border-blue-400 dark:bg-blue-900"
-                          : "border-secondary-200 hover:border-primary-300 hover:bg-primary-50 dark:border-gray-600 dark:hover:border-blue-400 dark:hover:bg-blue-900")
+                          ? "border-primary-500 bg-primary-100 dark:border-primary-400 dark:bg-primary-900"
+: "border-secondary-200 hover:border-primary-300 hover:bg-primary-50 dark:border-gray-600 dark:hover:border-primary-400 dark:hover:bg-primary-900")
                       }
                     >
-                      <span className="text-2xl">{style.icon}</span>
                       <span className="text-sm font-medium text-secondary-700 dark:text-gray-300">{style.name}</span>
                     </button>
                   );
@@ -152,7 +149,7 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       <button
                         key={size}
                         onClick={() => handleMarkerSizeChange(size)}
-                        className="w-12 h-12 rounded-full bg-secondary-100 flex items-center justify-center text-sm font-semibold text-secondary-700 hover:bg-primary-100 hover:text-primary-700 transition-all duration-200 transform hover:scale-110 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-blue-800 dark:hover:text-blue-200 focus:ring-2 focus:ring-primary-500 focus:outline-none"
+                        className="w-12 h-12 rounded-full bg-secondary-100 flex items-center justify-center text-sm font-semibold text-secondary-700 hover:bg-primary-100 hover:text-primary-700 transition-all duration-200 transform hover:scale-110 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-primary-800 dark:hover:text-primary-200 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                       >
                         {size}
                       </button>
@@ -166,7 +163,7 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       <button
                         key={color}
                         onClick={() => handleMarkerColorChange(color)}
-                        className="w-12 h-12 rounded-full border-2 border-secondary-200 hover:border-primary-300 transition-all duration-200 transform hover:scale-110 dark:border-gray-600 hover:dark:border-blue-400 focus:ring-2 focus:ring-primary-500 focus:outline-none"
+                        className="w-12 h-12 rounded-full border-2 border-secondary-200 hover:border-primary-300 transition-all duration-200 transform hover:scale-110 dark:border-gray-600 hover:dark:border-primary-400 focus:ring-2 focus:ring-primary-500 focus:outline-none"
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -189,7 +186,7 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       <button
                         key={weight}
                         onClick={() => handleRouteWeightChange(weight)}
-                        className="px-4 py-2 text-sm font-medium border-2 border-secondary-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 dark:border-gray-600 dark:hover:border-blue-400 dark:hover:bg-blue-900"
+                        className="px-4 py-2 text-sm font-medium border-2 border-secondary-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 dark:border-gray-600 dark:hover:border-primary-400 dark:hover:bg-primary-900"
                       >
                         {weight}px
                       </button>
@@ -203,7 +200,7 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       <button
                         key={color}
                         onClick={() => handleRouteColorChange(color)}
-                        className="w-12 h-12 rounded-full border-2 border-secondary-200 hover:border-primary-300 transition-all duration-200 transform hover:scale-110 dark:border-gray-600 hover:dark:border-blue-400"
+                        className="w-12 h-12 rounded-full border-2 border-secondary-200 hover:border-primary-300 transition-all duration-200 transform hover:scale-110 dark:border-gray-600 hover:dark:border-primary-400"
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -216,7 +213,7 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, i
                       <button
                         key={opacity}
                         onClick={() => handleRouteOpacityChange(opacity)}
-                        className="px-4 py-2 text-sm font-medium border-2 border-secondary-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 dark:border-gray-600 dark:hover:border-blue-400 dark:hover:bg-blue-900"
+                        className="px-4 py-2 text-sm font-medium border-2 border-secondary-200 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-all duration-200 transform hover:scale-105 dark:border-gray-600 dark:hover:border-primary-400 dark:hover:bg-primary-900"
                       >
                         {opacity}
                       </button>

@@ -1,4 +1,5 @@
 import type { Graph, Heuristic, PathfindingResult } from '../types';
+import { calculatePathDistance } from '../utils/pathfinding';
 
 
 interface AStarNode {
@@ -154,15 +155,7 @@ const depthLimitedSearch = (
   return null;
 };
 
-const calculatePathDistance = (path: string[], graph: Graph): number => {
-  let totalDistance = 0;
-  
-  for (let i = 0; i < path.length - 1; i++) {
-    totalDistance += graph[path[i]][path[i + 1]];
-  }
-  
-  return totalDistance;
-};
+
 
 const reconstructIDDFSPath = (goalNode: IDDFSNode): string[] => {
   const path: string[] = [];

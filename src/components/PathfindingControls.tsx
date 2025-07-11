@@ -98,7 +98,6 @@ export const PathfindingControls = ({
               <AlgorithmSelect
                 value={algorithmType}
                 onChange={onAlgorithmChange}
-                isDark={isDark}
               />
             </div>
 
@@ -173,7 +172,6 @@ export const PathfindingControls = ({
               <AlgorithmSelect
                 value={algorithmType}
                 onChange={onAlgorithmChange}
-                isDark={isDark}
               />
             </div>
 
