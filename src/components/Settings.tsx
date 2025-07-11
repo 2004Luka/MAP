@@ -6,11 +6,10 @@ interface SettingsProps {
   onMapStyleChange: (style: string) => void;
   onMarkerStyleChange: (style: { size: number; color: string }) => void;
   onRouteStyleChange: (style: { weight: number; color: string; opacity: number }) => void;
-  isDark: boolean;
   mapStyle: string;
 }
 
-const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, isDark, mapStyle }: SettingsProps) => {
+const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, mapStyle }: SettingsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [currentMarkerStyle, setCurrentMarkerStyle] = useState({ size: 4, color: '#6B7280' });
   const [currentRouteStyle, setCurrentRouteStyle] = useState({ weight: 3, color: '#3B82F6', opacity: 0.8 });

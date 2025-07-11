@@ -23,8 +23,6 @@ function App() {
   const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#3B82F6', opacity: 0.8 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
-  const isDark = mapStyle === 'dark_all';
-
   useEffect(() => {
     if (mapStyle === 'dark_all') {
       document.documentElement.classList.add('dark');
@@ -131,7 +129,6 @@ function App() {
           setMapStyle={setMapStyle}
           setMarkerStyle={setMarkerStyle}
           setRouteStyle={setRouteStyle}
-          isDark={isDark}
         />
       </div>
       {/* Mobile Toggle Button */}
@@ -180,7 +177,6 @@ function App() {
         nodesExplored={nodesExplored}
         isSidebarOpen={isSidebarOpen}
         onCloseSidebar={() => setIsSidebarOpen(false)}
-        isDark={isDark}
       />
     </div>
   )

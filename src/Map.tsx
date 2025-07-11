@@ -18,10 +18,9 @@ interface MapProps {
   setMapStyle: (style: string) => void;
   setMarkerStyle: (style: { size: number; color: string }) => void;
   setRouteStyle: (style: { weight: number; color: string; opacity: number }) => void;
-  isDark: boolean;
 }
 
-const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle, isDark }: MapProps) => {
+const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle }: MapProps) => {
   const mapRef = useRef<L.Map>(null);
 
   useEffect(() => {
@@ -165,7 +164,6 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         onMapStyleChange={setMapStyle}
         onMarkerStyleChange={setMarkerStyle}
         onRouteStyleChange={setRouteStyle}
-        isDark={isDark}
         mapStyle={mapStyle}
       />
     </div>

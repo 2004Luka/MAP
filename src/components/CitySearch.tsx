@@ -7,7 +7,6 @@ interface CitySearchProps {
   onCityRemove: () => void;
   selectedCity: City | null;
   cities: City[];
-  isDark: boolean;
 }
 
 export const CitySearch = ({
@@ -15,8 +14,7 @@ export const CitySearch = ({
   onCitySelect,
   onCityRemove,
   selectedCity,
-  cities,
-  isDark
+  cities
 }: CitySearchProps) => {
   const [search, setSearch] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);

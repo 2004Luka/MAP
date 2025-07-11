@@ -6,15 +6,13 @@ interface PathResultsProps {
   totalDistance: number;
   roadDistance: number;
   nodesExplored: number;
-  isDark: boolean;
 }
 
 export const PathResults = ({
   algorithmType,
   totalDistance,
   roadDistance,
-  nodesExplored,
-  isDark
+  nodesExplored
 }: PathResultsProps) => {
   if (totalDistance <= 0) return null;
 

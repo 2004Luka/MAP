@@ -16,7 +16,6 @@ interface PathfindingControlsProps {
   nodesExplored: number;
   isSidebarOpen?: boolean;
   onCloseSidebar?: () => void;
-  isDark: boolean;
 }
 
 export const PathfindingControls = ({
@@ -28,8 +27,7 @@ export const PathfindingControls = ({
   roadDistance,
   nodesExplored,
   isSidebarOpen = false,
-  onCloseSidebar,
-  isDark
+  onCloseSidebar
 }: PathfindingControlsProps) => {
   const [startCity, setStartCity] = useState<City | null>(null);
   const [endCity, setEndCity] = useState<City | null>(null);
@@ -80,7 +78,6 @@ export const PathfindingControls = ({
                 onCityRemove={() => setStartCity(null)}
                 selectedCity={startCity}
                 cities={cities}
-                isDark={isDark}
               />
 
               <CitySearch
@@ -89,7 +86,6 @@ export const PathfindingControls = ({
                 onCityRemove={() => setEndCity(null)}
                 selectedCity={endCity}
                 cities={cities}
-                isDark={isDark}
               />
             </div>
 
@@ -125,7 +121,6 @@ export const PathfindingControls = ({
                 totalDistance={totalDistance}
                 roadDistance={roadDistance}
                 nodesExplored={nodesExplored}
-                isDark={isDark}
               />
             </div>
           </div>
@@ -154,7 +149,6 @@ export const PathfindingControls = ({
                 onCityRemove={() => setStartCity(null)}
                 selectedCity={startCity}
                 cities={cities}
-                isDark={isDark}
               />
 
               <CitySearch
@@ -163,7 +157,6 @@ export const PathfindingControls = ({
                 onCityRemove={() => setEndCity(null)}
                 selectedCity={endCity}
                 cities={cities}
-                isDark={isDark}
               />
             </div>
 
@@ -204,7 +197,6 @@ export const PathfindingControls = ({
               totalDistance={totalDistance}
               roadDistance={roadDistance}
               nodesExplored={nodesExplored}
-              isDark={isDark}
             />
           </div>
         </div>
