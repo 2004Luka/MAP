@@ -5,7 +5,9 @@ import Map from './Map'
 import { PathfindingControls } from './components/PathfindingControls'
 import { cities } from './data/cities'
 import type { City, AlgorithmType } from './types'
-import { calculatePathDistance, createGraph } from './utils/pathfinding'
+import { calculatePathDistance, createGraph, createHeuristic } from './utils/pathfinding'
+import { astar, iddfs } from './algorithms/pathfinding'
+import { parseSharedRoute } from './utils/routeSharing'
 
 function App() {
   const cookieSettings = Cookies.get('geoSettings')
@@ -22,6 +24,94 @@ function App() {
   const [markerStyle, setMarkerStyle] = useState(parsedSettings.markerStyle || { size: 4, color: '#6B7280' })
   const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#3B82F6', opacity: 0.8 })
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+
+  const handleCitySelect = (city: City) => {
+    // If no cities are selected, set as start city
+    if (selectedCities.length === 0) {
+      setSelectedCities([city]);
+    }
+    // If one city is selected, set as end city
+    else if (selectedCities.length === 1) {
+      // If clicking the same city, clear it
+      if (selectedCities[0].name === city.name) {
+        setSelectedCities([]);
+      } else {
+        setSelectedCities([selectedCities[0], city]);
+        // Automatically find path when second city is selected
+        setTimeout(() => {
+          handleFindPath([selectedCities[0], city]);
+        }, 100);
+      }
+    }
+    // If two cities are selected, clear previous and set new city as start
+    else if (selectedCities.length === 2) {
+      // If clicking the same city, clear it
+      if (selectedCities[0].name === city.name || selectedCities[1].name === city.name) {
+        setSelectedCities([]);
+      } else {
+        // Clear previous selections and set new city as start
+        setSelectedCities([city]);
+      }
+    }
+    
+    // Clear any existing path when selecting new cities
+    setPath([]);
+    setTotalDistance(0);
+    setRoadDistance(0);
+    setNodesExplored(0);
+    setRoadRoute([]);
+  };
+
+  const handleFindPath = (citiesToUse: City[] = selectedCities) => {
+    if (citiesToUse.length !== 2) return;
+
+    const graph = createGraph(cities);
+    const heuristic = createHeuristic(cities, citiesToUse[1].name);
+
+    let result;
+    if (algorithm === 'astar') {
+      result = astar(graph, heuristic, citiesToUse[0].name, citiesToUse[1].name);
+    } else {
+      result = iddfs(graph, citiesToUse[0].name, citiesToUse[1].name);
+    }
+
+    setPath(result.path);
+    setNodesExplored(result.nodesExplored);
+    setAlgorithm(result.algorithm);
+
+    if (result.path.length > 0) {
+      const startCity = cities.find(city => city.name === result.path[0]);
+      const endCity = cities.find(city => city.name === result.path[result.path.length - 1]);
+      if (startCity && endCity) {
+        setSelectedCities([startCity, endCity]);
+      }
+    } else {
+      setSelectedCities([]);
+    }
+
+    if (result.algorithm === 'astar') {
+      setTotalDistance(0);
+      fetchRoadRoute(result.path);
+    } else {
+      const graph = createGraph(cities);
+      const straightLineDistance = calculatePathDistance(result.path, graph);
+      setTotalDistance(straightLineDistance);
+      setRoadDistance(0);
+      setRoadRoute([]);
+    }
+
+    // Call the original handlePathFound to ensure proper state updates
+    handlePathFound(result.path, result.nodesExplored, result.algorithm);
+  };
+
+  const handleClearMarkings = () => {
+    setSelectedCities([]);
+    setPath([]);
+    setTotalDistance(0);
+    setRoadDistance(0);
+    setNodesExplored(0);
+    setRoadRoute([]);
+  };
 
   useEffect(() => {
     if (mapStyle === 'dark_all') {
@@ -43,6 +133,31 @@ function App() {
       routeStyle
     }))
   }, [mapStyle, markerStyle, routeStyle])
+
+  // Handle shared routes from URL parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const sharedRoute = parseSharedRoute(searchParams);
+    
+    if (sharedRoute) {
+      const startCity = cities.find(city => city.name === sharedRoute.startCity);
+      const endCity = cities.find(city => city.name === sharedRoute.endCity);
+      
+      if (startCity && endCity) {
+        setSelectedCities([startCity, endCity]);
+        setAlgorithm(sharedRoute.algorithm);
+        setPath(sharedRoute.path);
+        setTotalDistance(sharedRoute.totalDistance);
+        setRoadDistance(sharedRoute.roadDistance);
+        setNodesExplored(sharedRoute.nodesExplored);
+        
+        // If it's an A* route, fetch the road route
+        if (sharedRoute.algorithm === 'astar' && sharedRoute.path.length > 0) {
+          fetchRoadRoute(sharedRoute.path);
+        }
+      }
+    }
+  }, []);
 
   const handlePathFound = (
     path: string[],
@@ -129,6 +244,9 @@ function App() {
           setMapStyle={setMapStyle}
           setMarkerStyle={setMarkerStyle}
           setRouteStyle={setRouteStyle}
+          onCitySelect={handleCitySelect}
+          onClearMarkings={handleClearMarkings}
+          cities={cities}
         />
       </div>
       {/* Mobile Toggle Button */}
@@ -175,8 +293,12 @@ function App() {
         totalDistance={totalDistance}
         roadDistance={roadDistance}
         nodesExplored={nodesExplored}
+        path={path}
+
         isSidebarOpen={isSidebarOpen}
         onCloseSidebar={() => setIsSidebarOpen(false)}
+        selectedCities={selectedCities}
+        onCitySelect={handleCitySelect}
       />
     </div>
   )

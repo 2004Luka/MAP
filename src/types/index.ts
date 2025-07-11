@@ -20,4 +20,22 @@ export interface PathfindingResult {
   distance: number;
   nodesExplored: number;
   algorithm: AlgorithmType;
+}
+
+export interface SharedRoute {
+  startCity: string;
+  endCity: string;
+  algorithm: AlgorithmType;
+  path: string[];
+  totalDistance: number;
+  roadDistance: number;
+  nodesExplored: number;
+  timestamp: number;
+}
+
+export interface RouteAnimationState {
+  isAnimating: boolean;
+  progress: number;
+  currentSegment: number;
+  totalSegments: number;
 } 

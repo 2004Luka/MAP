@@ -23,18 +23,25 @@
     @apply outline-2 outline-primary-500 outline-offset-2;
   }
 
-  /* Improved scrollbar styling */
+  /* Hide all scrollbars globally */
   ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
   }
 
   ::-webkit-scrollbar-track {
-    @apply bg-secondary-100 rounded-full;
+    display: none !important;
   }
 
   ::-webkit-scrollbar-thumb {
-    @apply bg-secondary-300 rounded-full hover:bg-secondary-400 transition-colors;
+    display: none !important;
+  }
+
+  /* Firefox and IE/Edge */
+  * {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
   }
 }
 

@@ -102,24 +102,25 @@
   transition: opacity 0.3s ease;
 }
 
-/* Custom scrollbar for dropdowns */
+/* Hide scrollbars for dropdowns and other overflow elements */
 .overflow-auto::-webkit-scrollbar {
-  width: 6px;
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .overflow-auto::-webkit-scrollbar-track {
-  background: #f1f5f9;
-  border-radius: 3px;
+  display: none !important;
 }
 
 .overflow-auto::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
-  border-radius: 3px;
-  transition: background-color 0.2s ease;
+  display: none !important;
 }
 
-.overflow-auto::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+/* Ensure all overflow elements have hidden scrollbars */
+.overflow-auto {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
 }
 
 /* Focus styles for better accessibility */
@@ -238,12 +239,66 @@
 
 /* Hide scrollbar but keep scrollable */
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
 }
 
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari and Opera */
+  display: none !important; /* Chrome, Safari and Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.hide-scrollbar::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+/* Hide sidebar scrollbar completely on all resolutions */
+.sidebar-scroll {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+.sidebar-scroll::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.sidebar-scroll::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.sidebar-scroll::-webkit-scrollbar-thumb {
+  display: none !important;
+}
+
+/* Ensure scrollbar is hidden for all sidebar elements */
+.sidebar-scroll.light,
+.sidebar-scroll.dark {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE and Edge */
+}
+
+.sidebar-scroll.light::-webkit-scrollbar,
+.sidebar-scroll.dark::-webkit-scrollbar {
+  display: none !important; /* Chrome, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.sidebar-scroll.light::-webkit-scrollbar-track,
+.sidebar-scroll.dark::-webkit-scrollbar-track {
+  display: none !important;
+}
+
+.sidebar-scroll.light::-webkit-scrollbar-thumb,
+.sidebar-scroll.dark::-webkit-scrollbar-thumb {
+  display: none !important;
 }
 
 
