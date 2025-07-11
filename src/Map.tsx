@@ -18,9 +18,10 @@ interface MapProps {
   setMapStyle: (style: string) => void;
   setMarkerStyle: (style: { size: number; color: string }) => void;
   setRouteStyle: (style: { weight: number; color: string; opacity: number }) => void;
+  isDark: boolean;
 }
 
-const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle }: MapProps) => {
+const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle, isDark }: MapProps) => {
   const mapRef = useRef<L.Map>(null);
 
   useEffect(() => {
@@ -37,6 +38,19 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
     }).filter((coord): coord is [number, number] => coord !== null);
   };
 
+  const getTileLayerUrl = (style: string) => {
+    switch (style) {
+      case 'light_all':
+        return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+      case 'dark_all':
+        return 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+      case 'rastertiles/voyager':
+        return 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
+      default:
+        return 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
+    }
+  };
+
   return (
     <div className="relative w-full h-full">
       <MapContainer
@@ -45,11 +59,23 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         style={{ height: '100%', width: '100%' }}
         ref={mapRef}
         attributionControl={false}
+        className="rounded-lg overflow-hidden shadow-strong"
+        zoomControl={false}
+        scrollWheelZoom={true}
+        doubleClickZoom={true}
+        boxZoom={true}
+        keyboard={true}
+        dragging={true}
+        easeLinearity={0.35}
       >
         <TileLayer
-          url={`https://{s}.basemaps.cartocdn.com/${mapStyle}/{z}/{x}/{y}{r}.png`}
+          url={getTileLayerUrl(mapStyle)}
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          maxZoom={19}
+          minZoom={3}
         />
         
+        {/* Enhanced city markers with better styling */}
         {cities.map((city) => (
           <CircleMarker
             key={city.name}
@@ -57,22 +83,52 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
             radius={markerStyle.size}
             pathOptions={{
               fillColor: markerStyle.color,
-              color: markerStyle.color,
-              weight: 1,
-              opacity: 0.7,
-              fillOpacity: 0.7,
+              color: '#ffffff',
+              weight: 2,
+              opacity: 1,
+              fillOpacity: 0.8,
+            }}
+            eventHandlers={{
+              mouseover: (e) => {
+                const layer = e.target;
+                layer.setStyle({
+                  fillOpacity: 1,
+                  weight: 3,
+                  radius: markerStyle.size + 2
+                });
+              },
+              mouseout: (e) => {
+                const layer = e.target;
+                layer.setStyle({
+                  fillOpacity: 0.8,
+                  weight: 2,
+                  radius: markerStyle.size
+                });
+              }
             }}
           />
         ))}
 
+        {/* Enhanced selected city markers */}
         {selectedCities.map((city, index) => (
           <Marker
             key={city.name}
             position={[city.lat, city.lng]}
             icon={createCustomIcon(index === 0 ? '#EF4444' : '#22C55E')}
+            eventHandlers={{
+              mouseover: (e) => {
+                const marker = e.target;
+                marker.getElement()?.style.setProperty('transform', 'scale(1.2)');
+              },
+              mouseout: (e) => {
+                const marker = e.target;
+                marker.getElement()?.style.setProperty('transform', 'scale(1)');
+              }
+            }}
           />
         ))}
 
+        {/* Enhanced route visualization */}
         {path.length > 0 && (
           <>
             {algorithm === 'iddfs' && (
@@ -82,7 +138,9 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
                   color: routeStyle.color,
                   weight: routeStyle.weight,
                   opacity: routeStyle.opacity,
-                  dashArray: '5, 10',
+                  dashArray: '8, 12',
+                  lineCap: 'round',
+                  lineJoin: 'round',
                 }}
               />
             )}
@@ -94,6 +152,8 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
                   color: routeStyle.color,
                   weight: routeStyle.weight,
                   opacity: routeStyle.opacity,
+                  lineCap: 'round',
+                  lineJoin: 'round',
                 }}
               />
             )}
@@ -105,6 +165,8 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         onMapStyleChange={setMapStyle}
         onMarkerStyleChange={setMarkerStyle}
         onRouteStyleChange={setRouteStyle}
+        isDark={isDark}
+        mapStyle={mapStyle}
       />
     </div>
   );

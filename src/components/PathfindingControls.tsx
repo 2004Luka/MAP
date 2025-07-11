@@ -14,6 +14,9 @@ interface PathfindingControlsProps {
   totalDistance: number;
   roadDistance: number;
   nodesExplored: number;
+  isSidebarOpen?: boolean;
+  onCloseSidebar?: () => void;
+  isDark: boolean;
 }
 
 export const PathfindingControls = ({
@@ -23,7 +26,10 @@ export const PathfindingControls = ({
   algorithmType,
   totalDistance,
   roadDistance,
-  nodesExplored
+  nodesExplored,
+  isSidebarOpen = false,
+  onCloseSidebar,
+  isDark
 }: PathfindingControlsProps) => {
   const [startCity, setStartCity] = useState<City | null>(null);
   const [endCity, setEndCity] = useState<City | null>(null);
@@ -42,6 +48,11 @@ export const PathfindingControls = ({
     }
 
     onPathFound(result.path, result.nodesExplored, result.algorithm);
+    
+    // Close sidebar on mobile after finding path
+    if (onCloseSidebar) {
+      onCloseSidebar();
+    }
   };
 
   const handleClear = () => {
@@ -50,52 +61,156 @@ export const PathfindingControls = ({
   };
 
   return (
-    <div className="absolute top-0 left-0 z-[1000] bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-lg w-80">
-      <div className="space-y-4">
-        <CitySearch
-          label="Start City"
-          onCitySelect={setStartCity}
-          onCityRemove={() => setStartCity(null)}
-          selectedCity={startCity}
-          cities={cities}
-        />
+    <>
+      {/* Desktop Layout */}
+      <div className="hidden lg:block absolute top-1 z-[1000] animate-fade-in">
+        <div className="card p-6 w-96 max-w-[calc(100vw-3rem)] bg-white text-secondary-900 border border-secondary-100 dark:bg-gray-800 dark:text-white dark:border-gray-600">
+          <div className="space-y-6">
+            {/* Header */}
+            <div className="text-center pb-4 border-b border-secondary-100 dark:border-gray-600">
+              <h1 className="text-2xl font-bold text-secondary-900 mb-1 dark:text-white">GeoRoutes</h1>
+              <p className="text-sm text-secondary-600 dark:text-gray-300">Find optimal paths between cities</p>
+            </div>
 
-        <CitySearch
-          label="End City"
-          onCitySelect={setEndCity}
-          onCityRemove={() => setEndCity(null)}
-          selectedCity={endCity}
-          cities={cities}
-        />
+            {/* City Selection */}
+            <div className="space-y-4">
+              <CitySearch
+                label="Start City"
+                onCitySelect={setStartCity}
+                onCityRemove={() => setStartCity(null)}
+                selectedCity={startCity}
+                cities={cities}
+                isDark={isDark}
+              />
 
-        <AlgorithmSelect
-          value={algorithmType}
-          onChange={onAlgorithmChange}
-        />
+              <CitySearch
+                label="End City"
+                onCitySelect={setEndCity}
+                onCityRemove={() => setEndCity(null)}
+                selectedCity={endCity}
+                cities={cities}
+                isDark={isDark}
+              />
+            </div>
 
-        <div className="flex gap-2">
-          <button
-            onClick={handleFindPath}
-            disabled={!startCity || !endCity}
-            className="flex-1 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            Find Path
-          </button>
-          <button
-            onClick={handleClear}
-            className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
-          >
-            Clear
-          </button>
+            {/* Algorithm Selection */}
+            <div className="animate-slide-up">
+              <AlgorithmSelect
+                value={algorithmType}
+                onChange={onAlgorithmChange}
+                isDark={isDark}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleFindPath}
+                disabled={!startCity || !endCity}
+                className="btn-primary flex-1"
+              >
+                Find Path
+              </button>
+              <button
+                onClick={handleClear}
+                className="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+              >
+                Clear
+              </button>
+            </div>
+
+            {/* Results */}
+            <div className="animate-slide-up">
+              <PathResults
+                algorithmType={algorithmType}
+                totalDistance={totalDistance}
+                roadDistance={roadDistance}
+                nodesExplored={nodesExplored}
+                isDark={isDark}
+              />
+            </div>
+          </div>
         </div>
-
-        <PathResults
-          algorithmType={algorithmType}
-          totalDistance={totalDistance}
-          roadDistance={roadDistance}
-          nodesExplored={nodesExplored}
-        />
       </div>
-    </div>
+
+      {/* Mobile Sidebar */}
+      <div
+        className={`lg:hidden fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-[85vw] z-[1002] transform transition-transform duration-300 ease-in-out ${
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } bg-white text-secondary-900 border-secondary-200 dark:bg-gray-800 dark:text-white dark:border-gray-600`}
+      >
+        <div className="h-full shadow-2xl overflow-y-auto">
+          <div className="p-6 space-y-6">
+            {/* Mobile Header */}
+            <div className="text-center pb-4 border-b border-secondary-100 dark:border-gray-600">
+              <h1 className="text-2xl font-bold text-secondary-900 mb-1 dark:text-white">GeoRoutes</h1>
+              <p className="text-sm text-secondary-600 dark:text-gray-300">Find optimal paths between cities</p>
+            </div>
+
+            {/* City Selection */}
+            <div className="space-y-4">
+              <CitySearch
+                label="Start City"
+                onCitySelect={setStartCity}
+                onCityRemove={() => setStartCity(null)}
+                selectedCity={startCity}
+                cities={cities}
+                isDark={isDark}
+              />
+
+              <CitySearch
+                label="End City"
+                onCitySelect={setEndCity}
+                onCityRemove={() => setEndCity(null)}
+                selectedCity={endCity}
+                cities={cities}
+                isDark={isDark}
+              />
+            </div>
+
+            {/* Algorithm Selection */}
+            <div className="animate-slide-up">
+              <AlgorithmSelect
+                value={algorithmType}
+                onChange={onAlgorithmChange}
+                isDark={isDark}
+              />
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleFindPath}
+                disabled={!startCity || !endCity}
+                className="btn-primary flex-1"
+              >
+                Find Path
+              </button>
+              <button
+                onClick={handleClear}
+                className="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mobile Bottom Results Panel */}
+      {totalDistance > 0 ? (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1001] w-full border-t shadow-lg mobile-results-panel bg-white text-secondary-900 border-secondary-200 dark:bg-gray-800 dark:text-white dark:border-gray-600">
+          <div className="p-4">
+            <PathResults
+              algorithmType={algorithmType}
+              totalDistance={totalDistance}
+              roadDistance={roadDistance}
+              nodesExplored={nodesExplored}
+              isDark={isDark}
+            />
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }; 

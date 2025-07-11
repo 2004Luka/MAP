@@ -4,9 +4,30 @@ import L from 'leaflet';
 export const createCustomIcon = (color: string) => {
   return L.divIcon({
     className: 'custom-div-icon',
-    html: `<div style="background-color: ${color}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.3);"></div>`,
-    iconSize: [12, 12],
-    iconAnchor: [6, 6]
+    html: `<div style="
+      background: radial-gradient(circle at 30% 30%, ${color}, ${color}dd);
+      width: 20px; 
+      height: 20px; 
+      border-radius: 50%; 
+      border: 3px solid white; 
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.1);
+      position: relative;
+      transform: scale(1);
+      transition: transform 0.2s ease;
+    ">
+      <div style="
+        position: absolute;
+        top: 25%;
+        left: 25%;
+        width: 50%;
+        height: 50%;
+        background: rgba(255,255,255,0.3);
+        border-radius: 50%;
+        transform: scale(0.8);
+      "></div>
+    </div>`,
+    iconSize: [20, 20],
+    iconAnchor: [10, 10]
   });
 };
 
@@ -21,11 +42,11 @@ export const getBoundsFromCities = (cities: City[]): L.LatLngBounds => {
 export const getPathColor = (algorithm: string): string => {
   switch (algorithm) {
     case 'astar':
-      return '#2563eb'; 
+      return '#3B82F6'; // primary-500
     case 'iddfs':
-      return '#16a34a'; 
+      return '#22C55E'; // success-500
     default:
-      return '#6b7280'; 
+      return '#64748B'; // secondary-500
   }
 };
 
