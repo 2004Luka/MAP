@@ -35,12 +35,12 @@ export const createStartIcon = () => {
   return L.divIcon({
     className: 'start-marker-icon',
     html: `<div style="
-      background: linear-gradient(135deg, #EF4444, #DC2626);
+      background: linear-gradient(135deg, #D9AF6B, #C99D55);
       width: 24px; 
       height: 24px; 
       border-radius: 50%; 
       border: 3px solid white; 
-      box-shadow: 0 4px 12px rgba(239,68,68,0.3), 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(217,175,107,0.3), 0 2px 4px rgba(0,0,0,0.1);
       position: relative;
       transform: scale(1);
       transition: transform 0.2s ease;
@@ -61,12 +61,12 @@ export const createEndIcon = () => {
   return L.divIcon({
     className: 'end-marker-icon',
     html: `<div style="
-      background: linear-gradient(135deg, #22C55E, #16A34A);
+      background: linear-gradient(135deg, #68855C, #536A4A);
       width: 24px; 
       height: 24px; 
       border-radius: 50%; 
       border: 3px solid white; 
-      box-shadow: 0 4px 12px rgba(34,197,94,0.3), 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(104,133,92,0.3), 0 2px 4px rgba(0,0,0,0.1);
       position: relative;
       transform: scale(1);
       transition: transform 0.2s ease;
@@ -87,12 +87,12 @@ export const createWaypointIcon = (index: number) => {
   return L.divIcon({
     className: 'waypoint-marker-icon',
     html: `<div style="
-      background: linear-gradient(135deg, #3B82F6, #2563EB);
+      background: linear-gradient(135deg, #526A83, #42556A);
       width: 20px; 
       height: 20px; 
       border-radius: 50%; 
       border: 3px solid white; 
-      box-shadow: 0 4px 12px rgba(59,130,246,0.3), 0 2px 4px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(82,106,131,0.3), 0 2px 4px rgba(0,0,0,0.1);
       position: relative;
       transform: scale(1);
       transition: transform 0.2s ease;

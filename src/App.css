@@ -1,4 +1,5 @@
-/* Custom styles for enhanced map experience */
+/* Leaflet-specific styles only */
+
 .leaflet-container {
   font-family: 'Inter', system-ui, sans-serif;
   border-radius: 12px;
@@ -20,7 +21,7 @@
   padding: 16px;
   font-size: 14px;
   line-height: 1.5;
-  color: #1e293b;
+  color: #313131;
   transition: color 0.2s ease;
 }
 
@@ -30,12 +31,6 @@
   transition: background-color 0.2s ease;
 }
 
-/* Map markers - no animations for better performance */
-.custom-div-icon {
-  /* Removed animations to improve performance */
-}
-
-/* Enhanced map controls styling */
 .leaflet-control-zoom {
   border-radius: 8px !important;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
@@ -48,28 +43,27 @@
   background: rgba(255, 255, 255, 0.95) !important;
   backdrop-filter: blur(8px);
   border: none !important;
-  color: #374151 !important;
+  color: #4A4A4A !important;
   font-weight: 600 !important;
   transition: all 0.2s ease !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background: rgba(59, 130, 246, 0.1) !important;
-  color: #3b82f6 !important;
+  background: rgba(13, 148, 136, 0.1) !important;
+  color: #0D9488 !important;
 }
 
 .leaflet-control-zoom a:active {
-  background: rgba(59, 130, 246, 0.2) !important;
+  background: rgba(13, 148, 136, 0.2) !important;
   transform: scale(0.95) !important;
 }
 
-/* Enhanced attribution styling */
 .leaflet-control-attribution {
   background: rgba(255, 255, 255, 0.9) !important;
   backdrop-filter: blur(8px);
   border-radius: 6px !important;
   font-size: 11px !important;
-  color: #6b7280 !important;
+  color: #636363 !important;
   transition: all 0.2s ease;
 }
 
@@ -84,118 +78,28 @@
   animation: none !important;
 }
 
-/* Disable animations on CircleMarker (city dots) */
 .leaflet-interactive {
   transition: none !important;
   animation: none !important;
 }
 
-/* Disable hover effects on map markers */
 .leaflet-interactive:hover {
   transform: none !important;
   transition: none !important;
 }
 
-/* Smooth map transitions */
 .leaflet-fade-anim .leaflet-tile,
 .leaflet-fade-anim .leaflet-popup {
   transition: opacity 0.3s ease;
 }
 
-/* Hide scrollbars for dropdowns and other overflow elements */
-.overflow-auto::-webkit-scrollbar {
-  display: none !important;
-  width: 0 !important;
-  height: 0 !important;
-}
-
-.overflow-auto::-webkit-scrollbar-track {
-  display: none !important;
-}
-
-.overflow-auto::-webkit-scrollbar-thumb {
-  display: none !important;
-}
-
-/* Ensure all overflow elements have hidden scrollbars */
-.overflow-auto {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE and Edge */
-}
-
-/* Focus styles for better accessibility */
-*:focus {
-  outline: 2px solid #3b82f6;
-  outline-offset: 2px;
-}
-
-/* Loading states */
-.loading {
-  position: relative;
-  overflow: hidden;
-}
-
-.loading::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-  0% {
-    left: -100%;
-  }
-  100% {
-    left: 100%;
-  }
-}
-
-/* Enhanced button states */
-.btn-primary:active,
-.btn-secondary:active {
-  transform: scale(0.95);
-}
-
-/* Glass morphism effect */
-.glass {
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Smooth transitions for all interactive elements */
-* {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  transition-duration: 150ms;
-}
-
-/* Mobile responsive styles */
+/* Mobile responsive adjustments */
 @media (max-width: 1023px) {
-  /* Ensure map takes full screen on mobile */
   .leaflet-container {
     border-radius: 0;
     box-shadow: none;
   }
   
-  /* Improve touch targets on mobile */
-  .btn-primary,
-  .btn-secondary {
-    min-height: 44px;
-    font-size: 16px;
-  }
-  
-  /* Better spacing for mobile */
-  .card {
-    border-radius: 0;
-    box-shadow: none;
-  }
-  
-  /* Ensure proper z-index for mobile sidebar */
   .leaflet-control-zoom {
     z-index: 1002 !important;
   }
@@ -203,102 +107,4 @@
   .leaflet-control-attribution {
     z-index: 1002 !important;
   }
-  
-  /* Mobile bottom results panel */
-  .mobile-results-panel {
-    animation: slideUp 0.3s ease-out;
-  }
-  
-  @keyframes slideUp {
-    from {
-      transform: translateY(100%);
-      opacity: 0;
-    }
-    to {
-      transform: translateY(0);
-      opacity: 1;
-    }
-  }
 }
-
-
-
-/* Tablet responsive adjustments */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .card {
-    max-width: 90vw;
-  }
-}
-
-/* Large screen optimizations */
-@media (min-width: 1024px) {
-  .leaflet-container {
-    border-radius: 12px;
-  }
-}
-
-/* Hide scrollbar but keep scrollable */
-.hide-scrollbar {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE and Edge */
-}
-
-.hide-scrollbar::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari and Opera */
-  width: 0 !important;
-  height: 0 !important;
-}
-
-.hide-scrollbar::-webkit-scrollbar-track {
-  display: none !important;
-}
-
-.hide-scrollbar::-webkit-scrollbar-thumb {
-  display: none !important;
-}
-
-/* Hide sidebar scrollbar completely on all resolutions */
-.sidebar-scroll {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE and Edge */
-}
-
-.sidebar-scroll::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari, Opera */
-  width: 0 !important;
-  height: 0 !important;
-}
-
-.sidebar-scroll::-webkit-scrollbar-track {
-  display: none !important;
-}
-
-.sidebar-scroll::-webkit-scrollbar-thumb {
-  display: none !important;
-}
-
-/* Ensure scrollbar is hidden for all sidebar elements */
-.sidebar-scroll.light,
-.sidebar-scroll.dark {
-  scrollbar-width: none !important; /* Firefox */
-  -ms-overflow-style: none !important; /* IE and Edge */
-}
-
-.sidebar-scroll.light::-webkit-scrollbar,
-.sidebar-scroll.dark::-webkit-scrollbar {
-  display: none !important; /* Chrome, Safari, Opera */
-  width: 0 !important;
-  height: 0 !important;
-}
-
-.sidebar-scroll.light::-webkit-scrollbar-track,
-.sidebar-scroll.dark::-webkit-scrollbar-track {
-  display: none !important;
-}
-
-.sidebar-scroll.light::-webkit-scrollbar-thumb,
-.sidebar-scroll.dark::-webkit-scrollbar-thumb {
-  display: none !important;
-}
-
-

@@ -21,8 +21,8 @@ function App() {
   const [nodesExplored, setNodesExplored] = useState<number>(0)
   const [roadRoute, setRoadRoute] = useState<[number, number][]>([])
   const [mapStyle, setMapStyle] = useState(parsedSettings.mapStyle || 'light_all')
-  const [markerStyle, setMarkerStyle] = useState(parsedSettings.markerStyle || { size: 4, color: '#6B7280' })
-  const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#3B82F6', opacity: 0.8 })
+  const [markerStyle, setMarkerStyle] = useState(parsedSettings.markerStyle || { size: 4, color: '#737373' }) // neutral-500
+  const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#0D9488', opacity: 0.8 }) // primary
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   const handleCitySelect = (city: City) => {
@@ -231,7 +231,7 @@ function App() {
   }
 
   return (
-    <div className={`relative w-full h-screen transition-colors duration-300 bg-secondary-50 text-secondary-900 dark:bg-gray-900 dark:text-white`}>
+    <div className="relative w-full h-screen transition-colors duration-300 bg-bg-main text-text-body dark:bg-neutral-900 dark:text-white">
       <div className={`w-full h-full lg:h-full ${totalDistance > 0 ? 'pb-20' : ''} lg:pb-0`}>
         <Map
           selectedCities={selectedCities}
@@ -252,36 +252,43 @@ function App() {
       {/* Mobile Toggle Button */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className={`fixed top-4 left-4 z-[1001] lg:hidden rounded-lg p-3 shadow-lg border transition-all duration-200 bg-white border-secondary-200 hover:shadow-xl text-secondary-700 dark:bg-gray-800 dark:border-gray-600 dark:hover:bg-gray-700 dark:text-gray-200`}
+        className="fixed top-4 left-4 z-[1001] lg:hidden glass p-3.5 rounded-xl shadow-lg hover:shadow-xl border border-border-light/50 transition-all duration-200 text-text-body dark:text-neutral-200 dark:border-neutral-700/50 transform hover:scale-110 active:scale-95"
         aria-label="Toggle sidebar"
       >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          {isSidebarOpen ? (
+        {isSidebarOpen ? (
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.5}
               d="M6 18L18 6M6 6l12 12"
             />
-          ) : (
+          </svg>
+        ) : (
+          <svg
+            className="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={2.5}
               d="M4 6h16M4 12h16M4 18h16"
             />
-          )}
-        </svg>
+          </svg>
+        )}
       </button>
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-[1001] lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[1001] lg:hidden animate-fade-in"
           onClick={() => setIsSidebarOpen(false)}
         />
       )}

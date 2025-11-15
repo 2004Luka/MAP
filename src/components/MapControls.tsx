@@ -1,4 +1,4 @@
-import { IoMdTrash, IoMdSearch, IoMdResize } from 'react-icons/io';
+import { Trash2, ZoomIn, Maximize2 } from 'lucide-react';
 import type { City } from '../types';
 
 interface MapControlsProps {
@@ -20,39 +20,39 @@ export const MapControls = ({
   const hasMultipleCities = cities.length > 0;
 
   return (
-    <div className="absolute top-20 right-5 z-[1000] flex flex-col gap-2">
+    <div className="absolute top-4 right-4 z-[1000] flex flex-col gap-3">
       {/* Clear Markings Button */}
       <button
         onClick={onClearMarkings}
         disabled={!hasSelectedCities}
-        className="glass p-3 rounded-lg hover:bg-white/90 transition-all duration-200 transform hover:scale-110 active:scale-95 bg-white text-secondary-900 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group"
+        className="glass p-3.5 rounded-xl hover:bg-bg-card/95 transition-all duration-200 transform hover:scale-110 active:scale-95 text-text-body dark:text-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group shadow-lg hover:shadow-xl"
         title="Clear all selected cities"
         aria-label="Clear markings"
       >
-        <IoMdTrash className="w-6 h-6 group-hover:text-red-500 transition-colors" />
+        <Trash2 className="w-5 h-5 group-hover:text-warning-500 transition-colors" />
       </button>
 
       {/* Zoom to Selected Button */}
       <button
         onClick={onZoomToSelected}
         disabled={!hasSelectedCities}
-        className="glass p-3 rounded-lg hover:bg-white/90 transition-all duration-200 transform hover:scale-110 active:scale-95 bg-white text-secondary-900 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group"
+        className="glass p-3.5 rounded-xl hover:bg-bg-card/95 transition-all duration-200 transform hover:scale-110 active:scale-95 text-text-body dark:text-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group shadow-lg hover:shadow-xl"
         title="Zoom to selected cities"
         aria-label="Zoom to selected"
       >
-        <IoMdSearch className="w-6 h-6 group-hover:text-blue-500 transition-colors" />
+        <ZoomIn className="w-5 h-5 group-hover:text-primary transition-colors" />
       </button>
 
       {/* Zoom to All Button */}
       <button
         onClick={onZoomToAll}
         disabled={!hasMultipleCities}
-        className="glass p-3 rounded-lg hover:bg-white/90 transition-all duration-200 transform hover:scale-110 active:scale-95 bg-white text-secondary-900 dark:bg-gray-800/80 dark:text-gray-200 dark:hover:bg-gray-700/90 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group"
+        className="glass p-3.5 rounded-xl hover:bg-bg-card/95 transition-all duration-200 transform hover:scale-110 active:scale-95 text-text-body dark:text-neutral-200 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100 group shadow-lg hover:shadow-xl"
         title="Zoom out to see all cities"
         aria-label="Zoom to all cities"
       >
-        <IoMdResize className="w-6 h-6 group-hover:text-green-500 transition-colors" />
+        <Maximize2 className="w-5 h-5 group-hover:text-success-500 transition-colors" />
       </button>
     </div>
   );
-}; 
+};

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { X, Search } from 'lucide-react';
 import type { City } from '../types';
 
 interface CitySearchProps {
@@ -51,53 +52,52 @@ export const CitySearch = ({
     setShowDropdown(false);
   };
 
-
-
   return (
     <div className="animate-slide-up">
-      <label className="block text-sm font-semibold text-secondary-700 mb-2 dark:text-gray-300">
+      <label className="block text-sm font-semibold text-text-header mb-2.5 dark:text-neutral-300">
         {label}
       </label>
       {selectedCity ? (
-        <div className="flex items-center gap-3 bg-white border border-primary-200 px-4 py-3 rounded-lg animate-scale-in text-secondary-900 dark:bg-gray-800 dark:text-white dark:border-primary-500">
+        <div className="flex items-center gap-3 bg-gradient-to-r from-primary-50 to-primary-100/50 border-2 border-primary-200 px-4 py-3.5 rounded-xl animate-scale-in text-text-body dark:from-primary-900/30 dark:to-primary-900/20 dark:text-neutral-50 dark:border-primary-500/50">
           <div className="flex-1">
-            <div className="font-medium text-primary-900 dark:text-primary-100">{selectedCity.name}</div>
+            <div className="font-semibold text-primary-700 dark:text-primary-300">{selectedCity.name}</div>
             {selectedCity.region && (
-              <div className="text-sm text-primary-600 dark:text-primary-300">{selectedCity.region}</div>
+              <div className="text-sm text-primary-600 dark:text-primary-400 mt-0.5">{selectedCity.region}</div>
             )}
           </div>
           <button
             onClick={onCityRemove}
-            className="text-primary-500 hover:text-primary-700 p-1 rounded-full hover:bg-primary-100 transition-all duration-200 dark:text-primary-300 dark:hover:text-primary-100 dark:hover:bg-primary-800"
+            className="text-primary-600 hover:text-primary-700 p-1.5 rounded-lg hover:bg-primary-200/50 transition-all duration-200 dark:text-primary-300 dark:hover:text-primary-100 dark:hover:bg-primary-800/50"
             aria-label="Remove selected city"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
+            <X className="w-4 h-4" />
           </button>
         </div>
       ) : (
         <div className="relative" ref={dropdownRef}>
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder={`Search ${label.toLowerCase()}...`}
-            className="input-field bg-white border border-secondary-200 text-secondary-900 placeholder-secondary-400 focus:border-primary-500 focus:ring-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:border-primary-500 dark:focus:ring-primary-500"
-            onFocus={() => setShowDropdown(true)}
-          />
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-muted" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={`Search ${label.toLowerCase()}...`}
+              className="input-field pl-10"
+              onFocus={() => setShowDropdown(true)}
+            />
+          </div>
           {showDropdown && filteredCities.length > 0 && (
-            <div className="absolute z-20 w-full mt-2 bg-white border border-secondary-200 rounded-lg shadow-strong max-h-60 overflow-auto animate-slide-down text-secondary-900 dark:bg-gray-800 dark:text-white dark:border-gray-600">
+            <div className="absolute z-20 w-full mt-2 bg-bg-card border-2 border-border-light rounded-xl shadow-xl max-h-60 overflow-auto animate-slide-down text-text-body dark:bg-neutral-800 dark:text-neutral-50 dark:border-neutral-600">
               {filteredCities.map((city, index) => (
                 <button
                   key={city.name}
                   onClick={() => handleCitySelect(city)}
-                  className="w-full px-4 py-3 text-left hover:bg-secondary-50 focus:outline-none focus:bg-secondary-50 transition-colors duration-150 border-b border-secondary-100 last:border-b-0 text-secondary-900 dark:hover:bg-gray-700 dark:focus:bg-gray-700 dark:border-gray-600 dark:text-white"
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  className="w-full px-4 py-3.5 text-left hover:bg-primary-50 focus:outline-none focus:bg-primary-50 transition-colors duration-150 border-b border-border-light last:border-b-0 text-text-body dark:hover:bg-neutral-700 dark:focus:bg-neutral-700 dark:border-neutral-700 dark:text-neutral-50"
+                  style={{ animationDelay: `${index * 30}ms` }}
                 >
-                  <div className="font-medium text-secondary-900 dark:text-white">{city.name}</div>
+                  <div className="font-semibold text-text-header dark:text-neutral-50">{city.name}</div>
                   {city.region && (
-                    <div className="text-sm text-secondary-600 mt-0.5 dark:text-gray-300">{city.region}</div>
+                    <div className="text-sm text-text-muted mt-0.5 dark:text-neutral-400">{city.region}</div>
                   )}
                 </button>
               ))}
@@ -107,4 +107,4 @@ export const CitySearch = ({
       )}
     </div>
   );
-}; 
+};

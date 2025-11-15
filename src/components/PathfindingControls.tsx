@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Share2, Navigation } from 'lucide-react';
 import type { City, AlgorithmType, SharedRoute } from '../types';
 import { createGraph, createHeuristic, calculatePathDistance } from '../utils/pathfinding';
 import { astar, iddfs } from '../algorithms/pathfinding';
@@ -42,18 +43,15 @@ export const PathfindingControls = ({
   const startCity = selectedCities[0] || null;
   const endCity = selectedCities[1] || null;
 
-  // Update currentRoute when path and distances change
   useEffect(() => {
     if (path.length > 0 && startCity && endCity) {
-      // Calculate the actual distance for the current path
       let calculatedDistance = totalDistance;
       let calculatedRoadDistance = roadDistance;
       
-      // If we have a path but no distance, calculate it
       if (path.length > 0 && totalDistance === 0) {
         const graph = createGraph(cities);
         calculatedDistance = calculatePathDistance(path, graph);
-        calculatedRoadDistance = 0; // For non-A* algorithms
+        calculatedRoadDistance = 0;
       }
       
       const sharedRoute: SharedRoute = {
@@ -87,7 +85,6 @@ export const PathfindingControls = ({
 
     onPathFound(result.path, result.nodesExplored, result.algorithm);
     
-    // Create shared route data
     const sharedRoute: SharedRoute = {
       startCity: startCity.name,
       endCity: endCity.name,
@@ -100,7 +97,6 @@ export const PathfindingControls = ({
     };
     setCurrentRoute(sharedRoute);
     
-    // Close sidebar on mobile after finding path
     if (onCloseSidebar) {
       onCloseSidebar();
     }
@@ -108,9 +104,7 @@ export const PathfindingControls = ({
 
   const handleClear = () => {
     setCurrentRoute(null);
-    // Clear the selected cities in the parent component
     if (selectedCities.length > 0) {
-      // This will trigger the parent to clear the selection
       onCitySelect(selectedCities[0]);
     }
   };
@@ -139,18 +133,22 @@ export const PathfindingControls = ({
 
   return (
     <>
-      {/* Desktop Layout */}
-      <div className="hidden lg:block absolute top-1 z-[1000] animate-fade-in">
-        <div className="card p-6 w-96 max-w-[calc(100vw-3rem)] bg-white text-secondary-900 border border-secondary-100 dark:bg-gray-800 dark:text-white dark:border-gray-600 overflow-y-auto sidebar-scroll dark:sidebar-scroll" style={{ maxHeight: 'calc(100vh - 0.5rem)' }}>
-          <div className="space-y-6">
+      {/* Desktop Sidebar */}
+      <div className="hidden lg:block fixed top-4 left-4 z-[1000] animate-fade-in">
+        <div className="card p-8 w-[420px] max-w-[calc(100vw-2rem)] overflow-y-auto sidebar-scroll" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
+          <div className="space-y-8">
             {/* Header */}
-            <div className="text-center pb-4 border-b border-secondary-100 dark:border-gray-600">
-              <h1 className="text-2xl font-bold text-secondary-900 mb-1 dark:text-white">GeoRoutes</h1>
-              <p className="text-sm text-secondary-600 dark:text-gray-300">Find optimal paths between cities</p>
+            <div className="text-left pb-6 border-b border-border-light dark:border-neutral-700/60">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent mb-2">
+                GeoRoutes
+              </h1>
+              <p className="text-sm text-text-muted dark:text-neutral-400 font-medium">
+                Find optimal paths between cities
+              </p>
             </div>
 
             {/* City Selection */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               <CitySearch
                 label="Start City"
                 onCitySelect={handleCitySelect}
@@ -181,13 +179,15 @@ export const PathfindingControls = ({
               <button
                 onClick={handleFindPath}
                 disabled={!startCity || !endCity}
-                className="btn-primary flex-1"
+                className="btn-primary flex-1 flex items-center justify-center gap-2"
               >
+                <Navigation className="w-5 h-5" />
                 Find Path
               </button>
               <button
                 onClick={handleClear}
-                className="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+                className="btn-secondary px-4"
+                aria-label="Clear selection"
               >
                 Clear
               </button>
@@ -204,14 +204,12 @@ export const PathfindingControls = ({
               
               {/* Share Button */}
               {currentRoute && totalDistance > 0 && (
-                <div className="mt-4 pt-4 border-t border-secondary-100 dark:border-gray-600">
+                <div className="mt-6 pt-6 border-t border-border-light dark:border-neutral-700/60">
                   <button
                     onClick={handleShareRoute}
                     className="w-full btn-primary flex items-center justify-center gap-2"
                   >
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                    </svg>
+                    <Share2 className="w-5 h-5" />
                     Share Route
                   </button>
                 </div>
@@ -225,18 +223,22 @@ export const PathfindingControls = ({
       <div
         className={`lg:hidden fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-[85vw] z-[1002] transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } bg-white text-secondary-900 border-secondary-200 dark:bg-gray-800 dark:text-white dark:border-gray-600`}
+        } bg-bg-card/95 backdrop-blur-xl text-text-body border-r border-border-light/50 dark:bg-neutral-800/95 dark:text-neutral-50 dark:border-neutral-700/50 shadow-2xl`}
       >
-        <div className="h-full shadow-2xl overflow-y-auto sidebar-scroll dark:sidebar-scroll">
+        <div className="h-full overflow-y-auto sidebar-scroll">
           <div className="p-6 space-y-6">
             {/* Mobile Header */}
-            <div className="text-center pb-4 border-b border-secondary-100 dark:border-gray-600">
-              <h1 className="text-2xl font-bold text-secondary-900 mb-1 dark:text-white">GeoRoutes</h1>
-              <p className="text-sm text-secondary-600 dark:text-gray-300">Find optimal paths between cities</p>
+            <div className="text-left pb-6 border-b border-border-light dark:border-neutral-700/60">
+              <h1 className="text-3xl font-bold bg-gradient-to-r from-primary-600 to-primary-500 bg-clip-text text-transparent mb-2">
+                GeoRoutes
+              </h1>
+              <p className="text-sm text-text-muted dark:text-neutral-400 font-medium">
+                Find optimal paths between cities
+              </p>
             </div>
 
             {/* City Selection */}
-            <div className="space-y-4">
+            <div className="space-y-5">
               <CitySearch
                 label="Start City"
                 onCitySelect={handleCitySelect}
@@ -267,13 +269,15 @@ export const PathfindingControls = ({
               <button
                 onClick={handleFindPath}
                 disabled={!startCity || !endCity}
-                className="btn-primary flex-1"
+                className="btn-primary flex-1 flex items-center justify-center gap-2"
               >
+                <Navigation className="w-5 h-5" />
                 Find Path
               </button>
               <button
                 onClick={handleClear}
-                className="btn-secondary dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:hover:bg-gray-600"
+                className="btn-secondary px-4"
+                aria-label="Clear selection"
               >
                 Clear
               </button>
@@ -284,8 +288,8 @@ export const PathfindingControls = ({
 
       {/* Mobile Bottom Results Panel */}
       {totalDistance > 0 ? (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1001] w-full border-t shadow-lg mobile-results-panel bg-white text-secondary-900 border-secondary-200 dark:bg-gray-800 dark:text-white dark:border-gray-600">
-          <div className="p-4">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1001] w-full border-t border-border-light/50 shadow-2xl mobile-results-panel bg-bg-card/95 backdrop-blur-xl text-text-body dark:bg-neutral-800/95 dark:text-neutral-50 dark:border-neutral-700/50">
+          <div className="p-5">
             <PathResults
               algorithmType={algorithmType}
               totalDistance={totalDistance}
@@ -295,19 +299,16 @@ export const PathfindingControls = ({
             
             {/* Mobile Share Button */}
             {currentRoute && (
-              <div className="mt-4 pt-4 border-t border-secondary-100 dark:border-gray-600">
+              <div className="mt-5 pt-5 border-t border-border-light dark:border-neutral-700/60">
                 <button
                   onClick={handleShareRoute}
                   className="w-full btn-primary flex items-center justify-center gap-2"
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                  </svg>
+                  <Share2 className="w-5 h-5" />
                   Share Route
                 </button>
               </div>
             )}
-            
           </div>
         </div>
       ) : null}
@@ -321,4 +322,4 @@ export const PathfindingControls = ({
       )}
     </>
   );
-}; 
+};

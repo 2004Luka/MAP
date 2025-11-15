@@ -116,7 +116,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         style={{ height: '100%', width: '100%' }}
         ref={mapRef}
         attributionControl={false}
-        className="rounded-lg overflow-hidden shadow-strong"
+        className="rounded-xl overflow-hidden shadow-xl"
         zoomControl={false}
         scrollWheelZoom={true}
         doubleClickZoom={true}
@@ -143,7 +143,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
               center={[city.lat, city.lng]}
               radius={markerStyle.size}
                           pathOptions={{
-              fillColor: isSelected ? (isStartCity ? '#EF4444' : '#10B981') : markerStyle.color,
+              fillColor: isSelected ? (isStartCity ? '#D9AF6B' : '#68855C') : markerStyle.color, // accent for start, success for end
               color: '#ffffff',
               weight: isSelected ? 3 : 2,
               opacity: 1,
@@ -158,7 +158,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
                         fillOpacity: 1,
                         weight: 3,
                         radius: markerStyle.size + 3,
-                        fillColor: '#3B82F6'
+                        fillColor: '#526A83' // primary-500
                       });
                     }
                   },
@@ -264,19 +264,20 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
           {/* Add more floating controls here if needed */}
         </div>
 
-        {/* Animation progress indicator (top-right, never overlaps 3D button) */}
+        {/* Animation progress indicator */}
         {isAnimating && (
-          <div className="absolute top-4 right-4 bg-white dark:bg-gray-800 rounded-lg shadow-lg p-3 z-[1100] w-56 max-w-[90vw]">
-            <div className="text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
+          <div className="absolute top-4 right-4 glass rounded-xl shadow-xl p-4 z-[1100] w-64 max-w-[90vw] border border-border-light/50 dark:border-neutral-700/50 animate-fade-in">
+            <div className="text-sm font-semibold text-text-body dark:text-neutral-300 mb-3 flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
               Drawing Route...
             </div>
-            <div className="w-full bg-gray-200 dark:bg-gray-600 rounded-full h-2">
+            <div className="w-full bg-bg-subtle/60 dark:bg-neutral-700/60 rounded-full h-2.5 overflow-hidden">
               <div 
-                className="bg-blue-500 h-2 rounded-full transition-all duration-100"
+                className="bg-gradient-to-r from-primary-600 to-primary-700 h-2.5 rounded-full transition-all duration-100 shadow-sm"
                 style={{ width: `${animationProgress * 100}%` }}
               />
             </div>
-            <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+            <div className="text-xs font-medium text-text-muted dark:text-neutral-400 mt-2 text-right">
               {Math.round(animationProgress * 100)}%
             </div>
           </div>
@@ -285,20 +286,22 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
 
       {/* Top Instruction Popup */}
       {selectedCities.length === 0 && showInstruction && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1200] pointer-events-none">
-          <div className="bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-lg px-4 py-3 shadow-lg border border-gray-200 dark:border-gray-600 max-w-sm pointer-events-auto relative">
-            <div className="flex items-center gap-2">
-              <svg className="w-4 h-4 text-blue-500 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.122 2.122" />
-              </svg>
-              <span className="text-sm text-gray-700 dark:text-gray-200">Click on city dots to select start and end points</span>
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-[1200] pointer-events-none animate-fade-in">
+          <div className="glass rounded-xl px-5 py-4 shadow-xl border border-border-light/50 dark:border-neutral-700/50 max-w-sm pointer-events-auto relative">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-8 h-8 bg-primary-100 dark:bg-primary-900/30 rounded-lg flex items-center justify-center">
+                <svg className="w-4 h-4 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.122 2.122" />
+                </svg>
+              </div>
+              <span className="text-sm font-medium text-text-body dark:text-neutral-300 flex-1">Click on city dots to select start and end points</span>
               <button
                 onClick={() => setShowInstruction(false)}
-                className="ml-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                className="text-text-muted hover:text-text-body dark:hover:text-neutral-300 transition-colors p-1 rounded-lg hover:bg-bg-hover dark:hover:bg-neutral-700"
                 aria-label="Close instruction"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </div>
@@ -311,6 +314,8 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         onMarkerStyleChange={setMarkerStyle}
         onRouteStyleChange={setRouteStyle}
         mapStyle={mapStyle}
+        markerStyle={markerStyle}
+        routeStyle={routeStyle}
       />
 
       <MapControls
