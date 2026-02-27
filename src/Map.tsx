@@ -13,6 +13,7 @@ interface MapProps {
   path: string[];
   algorithm: AlgorithmType;
   roadRoute: [number, number][];
+  visitedOrder?: string[];
   mapStyle: string;
   markerStyle: { size: number; color: string };
   routeStyle: { weight: number; color: string; opacity: number };
@@ -24,22 +25,48 @@ interface MapProps {
   cities: City[];
 }
 
-const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle, onCitySelect, onClearMarkings, cities }: MapProps) => {
+const Map = ({ selectedCities, path, algorithm, roadRoute, visitedOrder = [], mapStyle, markerStyle, routeStyle, setMapStyle, setMarkerStyle, setRouteStyle, onCitySelect, onClearMarkings, cities }: MapProps) => {
   const mapRef = useRef<L.Map>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [animationProgress, setAnimationProgress] = useState(0);
   const [animatedPath, setAnimatedPath] = useState<[number, number][]>([]);
   const [showInstruction, setShowInstruction] = useState(true);
+  const [visibleVisitedNodes, setVisibleVisitedNodes] = useState<Set<string>>(new Set());
 
-  // Removed automatic zoom on city selection
+  // Animation for visited nodes
+  useEffect(() => {
+    if (visitedOrder.length > 0) {
+      // Reset
+      setVisibleVisitedNodes(new Set());
+
+      let count = 0;
+      const total = visitedOrder.length;
+      // Adjust speed based on total nodes to keep animation time reasonable
+      const intervalTime = Math.max(10, Math.min(100, 2000 / total));
+
+      const interval = setInterval(() => {
+        count++;
+        setVisibleVisitedNodes(new Set(visitedOrder.slice(0, count)));
+
+        if (count >= total) {
+          clearInterval(interval);
+        }
+      }, intervalTime);
+
+      return () => clearInterval(interval);
+    } else {
+      setVisibleVisitedNodes(new Set());
+    }
+  }, [visitedOrder]);
+
 
   useEffect(() => {
-    if (path.length > 0 && (algorithm === 'astar' ? roadRoute.length > 0 : true)) {
+    if (path.length > 0 && (algorithm === 'astar' || algorithm === 'dijkstra' ? roadRoute.length > 0 : true)) {
       setIsAnimating(true);
       setAnimationProgress(0);
-      
-      const pathToAnimate = algorithm === 'astar' ? roadRoute : getPathCoordinates(path);
-      
+
+      const pathToAnimate = (algorithm === 'astar' || algorithm === 'dijkstra') ? roadRoute : getPathCoordinates(path);
+
       const cancelAnimation = createRouteAnimation(
         3000,
         (progress) => {
@@ -81,7 +108,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
     if (isAnimating) {
       return animatedPath;
     }
-    return algorithm === 'astar' ? roadRoute : getPathCoordinates(path);
+    return (algorithm === 'astar' || algorithm === 'dijkstra') ? roadRoute : getPathCoordinates(path);
   };
 
   const pathToRender = getPathToRender();
@@ -108,6 +135,29 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
     }
   };
 
+  // Pre-calculate connections for rendering the graph
+  const connections: { from: [number, number], to: [number, number] }[] = [];
+  const processedConnections = new Set<string>();
+
+  cities.forEach(city => {
+    if (city.connections) {
+      city.connections.forEach(neighborName => {
+        const neighbor = cities.find(c => c.name === neighborName);
+        if (neighbor) {
+          // Create unique key for connection (alphabetical order to avoid duplicates)
+          const key = [city.name, neighborName].sort().join('-');
+          if (!processedConnections.has(key)) {
+            connections.push({
+              from: [city.lat, city.lng],
+              to: [neighbor.lat, neighbor.lng]
+            });
+            processedConnections.add(key);
+          }
+        }
+      });
+    }
+  });
+
   return (
     <div className="relative w-full h-full">
       <MapContainer
@@ -131,37 +181,74 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
           maxZoom={19}
           minZoom={3}
         />
-        
+
+        {/* Render Graph Connections (Base Layer) */}
+        {connections.map((conn, i) => (
+          <Polyline
+            key={i}
+            positions={[conn.from, conn.to]}
+            pathOptions={{
+              color: mapStyle === 'dark_all' ? '#ffffff' : '#000000',
+              weight: 1,
+              opacity: 0.1,
+              dashArray: '5, 5'
+            }}
+          />
+        ))}
+
+        {/* Visited Nodes Animation */}
+        {Array.from(visibleVisitedNodes).map(cityName => {
+          const city = cities.find(c => c.name === cityName);
+          if (!city) return null;
+          // Don't draw over start/end/path if possible, or draw with lower z-index / proper styling
+          // Actually, specialized visualization usually lights them up.
+
+          return (
+            <CircleMarker
+              key={`visited-${cityName}`}
+              center={[city.lat, city.lng]}
+              radius={3}
+              pathOptions={{
+                fillColor: '#F59E0B', // Amber-500 for searching
+                color: '#F59E0B',
+                weight: 1,
+                opacity: 0.6,
+                fillOpacity: 0.6
+              }}
+            />
+          );
+        })}
+
         {/* Enhanced city markers with click functionality */}
         {cities.map((city) => {
           const isSelected = selectedCities.some(selectedCity => selectedCity.name === city.name);
           const isStartCity = selectedCities[0]?.name === city.name;
-          
+
           return (
             <CircleMarker
               key={city.name}
               center={[city.lat, city.lng]}
               radius={markerStyle.size}
-                          pathOptions={{
-              fillColor: isSelected ? (isStartCity ? '#D9AF6B' : '#68855C') : markerStyle.color, // accent for start, success for end
-              color: '#ffffff',
-              weight: isSelected ? 3 : 2,
-              opacity: 1,
-              fillOpacity: isSelected ? 1 : 0.8,
-            }}
-                        className="cursor-pointer"
-            eventHandlers={{
-                                  mouseover: (e) => {
-                    const layer = e.target;
-                    if (!isSelected) {
-                      layer.setStyle({
-                        fillOpacity: 1,
-                        weight: 3,
-                        radius: markerStyle.size + 3,
-                        fillColor: '#526A83' // primary-500
-                      });
-                    }
-                  },
+              pathOptions={{
+                fillColor: isSelected ? (isStartCity ? '#D9AF6B' : '#68855C') : markerStyle.color, // accent for start, success for end
+                color: '#ffffff',
+                weight: isSelected ? 3 : 2,
+                opacity: 1,
+                fillOpacity: isSelected ? 1 : 0.8,
+              }}
+              className="cursor-pointer"
+              eventHandlers={{
+                mouseover: (e) => {
+                  const layer = e.target;
+                  if (!isSelected) {
+                    layer.setStyle({
+                      fillOpacity: 1,
+                      weight: 3,
+                      radius: markerStyle.size + 3,
+                      fillColor: '#526A83' // primary-500
+                    });
+                  }
+                },
                 mouseout: (e) => {
                   const layer = e.target;
                   if (!isSelected) {
@@ -206,7 +293,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         {path.length > 2 && path.slice(1, -1).map((cityName, index) => {
           const city = cities.find(c => c.name === cityName);
           if (!city) return null;
-          
+
           return (
             <Marker
               key={`waypoint-${cityName}`}
@@ -229,33 +316,32 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
         {/* Enhanced route visualization with animation */}
         {pathToRender.length > 0 && (
           <>
-            {algorithm === 'iddfs' && (
-              <Polyline
-                positions={pathToRender}
-                pathOptions={{
-                  color: animatedStyle.color,
-                  weight: animatedStyle.weight,
-                  opacity: animatedStyle.opacity,
-                  dashArray: animatedStyle.dashArray || '8, 12',
-                  lineCap: 'round',
-                  lineJoin: 'round',
-                }}
-              />
-            )}
-            
-            {algorithm === 'astar' && (
-              <Polyline
-                positions={pathToRender}
-                pathOptions={{
-                  color: animatedStyle.color,
-                  weight: animatedStyle.weight,
-                  opacity: animatedStyle.opacity,
-                  dashArray: animatedStyle.dashArray,
-                  lineCap: 'round',
-                  lineJoin: 'round',
-                }}
-              />
-            )}
+            {/* Draw the route line */}
+            {/* Glow Effect */}
+            <Polyline
+              positions={pathToRender}
+              pathOptions={{
+                color: animatedStyle.color,
+                weight: animatedStyle.weight * 3,
+                opacity: 0.2,
+                lineCap: 'round',
+                lineJoin: 'round',
+                className: 'route-glow'
+              }}
+            />
+
+            {/* Main Route Line */}
+            <Polyline
+              positions={pathToRender}
+              pathOptions={{
+                color: animatedStyle.color,
+                weight: animatedStyle.weight,
+                opacity: animatedStyle.opacity,
+                dashArray: (algorithm !== 'astar' && algorithm !== 'dijkstra') ? (animatedStyle.dashArray || '8, 12') : animatedStyle.dashArray,
+                lineCap: 'round',
+                lineJoin: 'round',
+              }}
+            />
           </>
         )}
 
@@ -272,7 +358,7 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
               Drawing Route...
             </div>
             <div className="w-full bg-bg-subtle/60 dark:bg-neutral-700/60 rounded-full h-2.5 overflow-hidden">
-              <div 
+              <div
                 className="bg-gradient-to-r from-primary-600 to-primary-700 h-2.5 rounded-full transition-all duration-100 shadow-sm"
                 style={{ width: `${animationProgress * 100}%` }}
               />
@@ -331,4 +417,4 @@ const Map = ({ selectedCities, path, algorithm, roadRoute, mapStyle, markerStyle
   );
 };
 
-export default Map; 
+export default Map;

@@ -9,47 +9,46 @@ export default {
     extend: {
       colors: {
         // Primary Action Color - Deep Teal (Trust, Precision, Reliability)
-        // WCAG AA compliant: #0D9488 on white (4.8:1), white on #0D9488 (4.8:1)
         primary: {
-          DEFAULT: '#0D9488',  // Teal-600 - Main action color
-          50: '#F0FDFA',   // Lightest - backgrounds
-          100: '#CCFBF1',  // Very light - subtle backgrounds
-          200: '#99F6E4',  // Light - hover states
-          300: '#5EEAD4',  // Medium-light - active states
-          400: '#2DD4BF',  // Medium - accents
-          500: '#14B8A6',  // Base - primary actions
-          600: '#0D9488',  // DEFAULT - buttons, links, focus
-          700: '#0F766E',  // Dark - hover buttons
-          800: '#115E59',  // Darker - active buttons
-          900: '#134E4A',  // Darkest - text on light
-          950: '#042F2E',  // Near black - dark mode text
+          DEFAULT: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          50: 'rgb(var(--color-primary-50) / <alpha-value>)',
+          100: 'rgb(var(--color-primary-100) / <alpha-value>)',
+          200: 'rgb(var(--color-primary-200) / <alpha-value>)',
+          300: 'rgb(var(--color-primary-300) / <alpha-value>)',
+          400: 'rgb(var(--color-primary-400) / <alpha-value>)',
+          500: 'rgb(var(--color-primary-500) / <alpha-value>)',
+          600: 'rgb(var(--color-primary-600) / <alpha-value>)',
+          700: 'rgb(var(--color-primary-700) / <alpha-value>)',
+          800: 'rgb(var(--color-primary-800) / <alpha-value>)',
+          900: 'rgb(var(--color-primary-900) / <alpha-value>)',
+          950: 'rgb(var(--color-primary-900) / <alpha-value>)', // fallback to 900 if 950 not defined
         },
-        
-        // Background Palette - Layered Grays
+
+        // Background Palette
         bg: {
-          main: '#FAFAFA',      // Main app background (off-white)
-          subtle: '#F5F5F5',    // Subtle background differentiation
-          card: '#FFFFFF',      // Card/sidebar background
-          hover: '#F9F9F9',     // Hover states
-          active: '#F0F0F0',    // Active states
+          main: 'rgb(var(--color-bg-main) / <alpha-value>)',
+          subtle: 'rgb(var(--color-bg-subtle) / <alpha-value>)',
+          card: 'rgb(var(--color-bg-card) / <alpha-value>)',
+          hover: 'rgb(var(--color-bg-hover) / <alpha-value>)',
+          active: 'rgb(var(--color-bg-active) / <alpha-value>)',
         },
-        
-        // Text Palette - High Contrast
+
+        // Text Palette
         text: {
-          header: '#1A1A1A',    // Headings (WCAG AAA: 16.6:1 on white)
-          body: '#262626',      // Body text (WCAG AAA: 15.3:1 on white)
-          muted: '#737373',     // Muted/placeholder (WCAG AA: 4.6:1 on white)
-          subtle: '#A3A3A3',    // Subtle text (WCAG AA: 3.1:1 on white)
+          header: 'rgb(var(--color-text-header) / <alpha-value>)',
+          body: 'rgb(var(--color-text-body) / <alpha-value>)',
+          muted: 'rgb(var(--color-text-muted) / <alpha-value>)',
+          subtle: 'rgb(var(--color-text-subtle) / <alpha-value>)',
         },
-        
+
         // Border Palette
         border: {
-          light: '#E5E5E5',     // Light borders
-          DEFAULT: '#D4D4D4',   // Default borders
-          medium: '#A3A3A3',    // Medium borders
-          dark: '#737373',      // Dark borders
+          light: 'rgb(var(--color-border-light) / <alpha-value>)',
+          DEFAULT: 'rgb(var(--color-border-DEFAULT) / <alpha-value>)',
+          medium: 'rgb(var(--color-border-medium) / <alpha-value>)',
+          dark: 'rgb(var(--color-border-medium) / <alpha-value>)', // fallback
         },
-        
+
         // Success - Green (Completion, Success States)
         // WCAG AA compliant: #059669 on white (4.5:1), white on #059669 (4.5:1)
         success: {
@@ -65,7 +64,7 @@ export default {
           800: '#065F46',
           900: '#064E3B',
         },
-        
+
         // Warning - Amber (Caution, Attention)
         // WCAG AA compliant: #D97706 on white (4.7:1), white on #D97706 (4.7:1)
         warning: {
@@ -81,7 +80,7 @@ export default {
           800: '#92400E',
           900: '#78350F',
         },
-        
+
         // Error - Red (Errors, Destructive Actions)
         // WCAG AA compliant: #DC2626 on white (5.1:1), white on #DC2626 (5.1:1)
         error: {
@@ -97,7 +96,7 @@ export default {
           800: '#991B1B',
           900: '#7F1D1D',
         },
-        
+
         // Info - Blue (Information, Neutral Actions)
         // WCAG AA compliant: #2563EB on white (4.6:1), white on #2563EB (4.6:1)
         info: {
@@ -113,7 +112,7 @@ export default {
           800: '#1E40AF',
           900: '#1E3A8A',
         },
-        
+
         // Accent - Start Point Marker (Golden/Amber)
         accent: {
           DEFAULT: '#F59E0B',   // Amber-500
@@ -128,7 +127,7 @@ export default {
           800: '#92400E',
           900: '#78350F',
         },
-        
+
         // Neutral - Fallback grays (for compatibility)
         neutral: {
           DEFAULT: '#737373',

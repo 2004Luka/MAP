@@ -1,4 +1,4 @@
-import { ChevronDown } from 'lucide-react';
+import { CustomSelect } from './CustomSelect';
 import type { AlgorithmType } from '../types';
 
 interface AlgorithmSelectProps {
@@ -6,25 +6,21 @@ interface AlgorithmSelectProps {
   onChange: (algorithm: AlgorithmType) => void;
 }
 
+const ALGORITHM_OPTIONS = [
+  { value: 'astar', label: 'A* Search' },
+  { value: 'dijkstra', label: "Dijkstra's Algorithm" },
+  { value: 'bfs', label: 'Breadth-First Search (BFS)' },
+  { value: 'dfs', label: 'Depth-First Search (DFS)' },
+  { value: 'iddfs', label: 'Iterative Deepening DFS' },
+];
+
 export const AlgorithmSelect = ({ value, onChange }: AlgorithmSelectProps) => {
   return (
-    <div className="animate-slide-up">
-      <label className="block text-sm font-semibold text-text-header mb-2.5 dark:text-neutral-300">
-        Algorithm
-      </label>
-      <div className="relative">
-        <select
-          value={value}
-          onChange={(e) => onChange(e.target.value as AlgorithmType)}
-          className="input-field appearance-none cursor-pointer pr-10 font-medium"
-        >
-          <option value="astar">A* Search</option>
-          <option value="iddfs">Iterative Deepening DFS</option>
-        </select>
-        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-          <ChevronDown className="w-5 h-5 text-text-muted dark:text-neutral-400" />
-        </div>
-      </div>
-    </div>
+    <CustomSelect
+      label="Algorithm"
+      value={value}
+      onChange={(val) => onChange(val as AlgorithmType)}
+      options={ALGORITHM_OPTIONS}
+    />
   );
 };

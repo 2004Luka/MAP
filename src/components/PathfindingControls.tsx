@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Share2, Navigation } from 'lucide-react';
 import type { City, AlgorithmType, SharedRoute } from '../types';
 import { createGraph, createHeuristic, calculatePathDistance } from '../utils/pathfinding';
-import { astar, iddfs } from '../algorithms/pathfinding';
+import { astar, iddfs, bfs, dfs, dijkstra } from '../algorithms/pathfinding';
 import { CitySearch } from './CitySearch';
 import { AlgorithmSelect } from './AlgorithmSelect';
 import { PathResults } from './PathResults';
@@ -21,6 +21,7 @@ interface PathfindingControlsProps {
   onCloseSidebar?: () => void;
   selectedCities: City[];
   onCitySelect: (city: City) => void;
+  isLoadingRoute?: boolean;
 }
 
 export const PathfindingControls = ({
@@ -35,7 +36,8 @@ export const PathfindingControls = ({
   isSidebarOpen = false,
   onCloseSidebar,
   selectedCities,
-  onCitySelect
+  onCitySelect,
+  isLoadingRoute = false
 }: PathfindingControlsProps) => {
   const [showSharing, setShowSharing] = useState(false);
   const [currentRoute, setCurrentRoute] = useState<SharedRoute | null>(null);
@@ -47,13 +49,13 @@ export const PathfindingControls = ({
     if (path.length > 0 && startCity && endCity) {
       let calculatedDistance = totalDistance;
       let calculatedRoadDistance = roadDistance;
-      
+
       if (path.length > 0 && totalDistance === 0) {
         const graph = createGraph(cities);
         calculatedDistance = calculatePathDistance(path, graph);
         calculatedRoadDistance = 0;
       }
-      
+
       const sharedRoute: SharedRoute = {
         startCity: startCity.name,
         endCity: endCity.name,
@@ -77,14 +79,29 @@ export const PathfindingControls = ({
     const heuristic = createHeuristic(cities, endCity.name);
 
     let result;
-    if (algorithmType === 'astar') {
-      result = astar(graph, heuristic, startCity.name, endCity.name);
-    } else {
-      result = iddfs(graph, startCity.name, endCity.name);
+    switch (algorithmType) {
+      case 'astar':
+        result = astar(graph, heuristic, startCity.name, endCity.name);
+        break;
+      case 'dijkstra':
+        result = dijkstra(graph, startCity.name, endCity.name); // Using dijkstra from imported algorithms
+        break;
+      case 'bfs':
+        result = bfs(graph, startCity.name, endCity.name); // Using bfs from imported algorithms
+        break;
+      case 'dfs':
+        result = dfs(graph, startCity.name, endCity.name); // Using dfs from imported algorithms
+        break;
+      case 'iddfs':
+        result = iddfs(graph, startCity.name, endCity.name);
+        break;
+      default:
+        result = astar(graph, heuristic, startCity.name, endCity.name);
     }
 
     onPathFound(result.path, result.nodesExplored, result.algorithm);
-    
+
+    // ... rest of logic
     const sharedRoute: SharedRoute = {
       startCity: startCity.name,
       endCity: endCity.name,
@@ -96,7 +113,7 @@ export const PathfindingControls = ({
       timestamp: Date.now()
     };
     setCurrentRoute(sharedRoute);
-    
+
     if (onCloseSidebar) {
       onCloseSidebar();
     }
@@ -195,13 +212,23 @@ export const PathfindingControls = ({
 
             {/* Results */}
             <div className="animate-slide-up">
-              <PathResults
-                algorithmType={algorithmType}
-                totalDistance={totalDistance}
-                roadDistance={roadDistance}
-                nodesExplored={nodesExplored}
-              />
-              
+              {isLoadingRoute && (
+                <div className="animate-pulse bg-gradient-to-br from-primary-50 to-primary-100/30 text-primary-900 border-2 border-primary-200/50 rounded-xl p-5 dark:from-primary-900/20 dark:to-primary-900/10 dark:text-neutral-50 dark:border-primary-700/50">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                    <span className="text-sm font-semibold">Fetching road route...</span>
+                  </div>
+                </div>
+              )}
+              {!isLoadingRoute && (
+                <PathResults
+                  algorithmType={algorithmType}
+                  totalDistance={totalDistance}
+                  roadDistance={roadDistance}
+                  nodesExplored={nodesExplored}
+                />
+              )}
+
               {/* Share Button */}
               {currentRoute && totalDistance > 0 && (
                 <div className="mt-6 pt-6 border-t border-border-light dark:border-neutral-700/60">
@@ -221,9 +248,8 @@ export const PathfindingControls = ({
 
       {/* Mobile Sidebar */}
       <div
-        className={`lg:hidden fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-[85vw] z-[1002] transform transition-transform duration-300 ease-in-out ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } bg-bg-card/95 backdrop-blur-xl text-text-body border-r border-border-light/50 dark:bg-neutral-800/95 dark:text-neutral-50 dark:border-neutral-700/50 shadow-2xl`}
+        className={`lg:hidden fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-[85vw] z-[1002] transform transition-transform duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+          } bg-bg-card/95 backdrop-blur-xl text-text-body border-r border-border-light/50 dark:bg-neutral-800/95 dark:text-neutral-50 dark:border-neutral-700/50 shadow-2xl`}
       >
         <div className="h-full overflow-y-auto sidebar-scroll">
           <div className="p-6 space-y-6">
@@ -290,13 +316,24 @@ export const PathfindingControls = ({
       {totalDistance > 0 ? (
         <div className="lg:hidden fixed bottom-0 left-0 right-0 z-[1001] w-full border-t border-border-light/50 shadow-2xl mobile-results-panel bg-bg-card/95 backdrop-blur-xl text-text-body dark:bg-neutral-800/95 dark:text-neutral-50 dark:border-neutral-700/50">
           <div className="p-5">
-            <PathResults
-              algorithmType={algorithmType}
-              totalDistance={totalDistance}
-              roadDistance={roadDistance}
-              nodesExplored={nodesExplored}
-            />
-            
+            {/* Path Results */}
+            {isLoadingRoute && (
+              <div className="animate-pulse bg-gradient-to-br from-primary-50 to-primary-100/30 text-primary-900 border-2 border-primary-200/50 rounded-xl p-5 dark:from-primary-900/20 dark:to-primary-900/10 dark:text-neutral-50 dark:border-primary-700/50">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-4 h-4 border-2 border-primary-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm font-semibold">Fetching road route...</span>
+                </div>
+              </div>
+            )}
+            {!isLoadingRoute && (
+              <PathResults
+                algorithmType={algorithmType}
+                totalDistance={totalDistance}
+                roadDistance={roadDistance}
+                nodesExplored={nodesExplored}
+              />
+            )}
+
             {/* Mobile Share Button */}
             {currentRoute && (
               <div className="mt-5 pt-5 border-t border-border-light dark:border-neutral-700/60">

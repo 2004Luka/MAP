@@ -1,34 +1,20 @@
 import type { Graph, Heuristic, PathfindingResult } from '../types';
 import { calculatePathDistance } from '../utils/pathfinding';
 
-
-interface AStarNode {
+interface Node {
   city: string;
-  g: number;  
-  h: number; 
-  f: number; 
-  parent: AStarNode | null;
+  g: number;
+  f: number;
+  parent: Node | null;
 }
 
-const findLowestFScoreNode = (openSet: AStarNode[]): number => {
-  let lowestIndex = 0;
-  for (let i = 1; i < openSet.length; i++) {
-    if (openSet[i].f < openSet[lowestIndex].f) {
-      lowestIndex = i;
-    }
-  }
-  return lowestIndex;
-};
-
-const reconstructPath = (goalNode: AStarNode): string[] => {
+const reconstructPath = (node: Node): string[] => {
   const path: string[] = [];
-  let current: AStarNode | null = goalNode;
-  
+  let current: Node | null = node;
   while (current) {
     path.unshift(current.city);
     current = current.parent;
   }
-  
   return path;
 };
 
@@ -38,165 +24,326 @@ export const astar = (
   start: string,
   goal: string
 ): PathfindingResult => {
-  const openSet: AStarNode[] = [];
+  const openSet: Node[] = [];
   const closedSet = new Set<string>();
-  const nodesExplored = new Set<string>();
+  const visitedOrder: string[] = [];
 
-  const startNode: AStarNode = {
+  openSet.push({
     city: start,
     g: 0,
-    h: heuristic[start],
     f: heuristic[start],
     parent: null
-  };
-  openSet.push(startNode);
+  });
 
   while (openSet.length > 0) {
-    const currentIndex = findLowestFScoreNode(openSet);
-    const currentNode = openSet[currentIndex];
-    
-    nodesExplored.add(currentNode.city);
+    // Find node with lowest f score
+    let lowestIndex = 0;
+    for (let i = 1; i < openSet.length; i++) {
+      if (openSet[i].f < openSet[lowestIndex].f) {
+        lowestIndex = i;
+      }
+    }
 
-    if (currentNode.city === goal) {
+    const current = openSet[lowestIndex];
+
+    // Remove current from openSet
+    openSet.splice(lowestIndex, 1);
+
+    if (closedSet.has(current.city)) continue;
+
+    closedSet.add(current.city);
+    visitedOrder.push(current.city);
+
+    if (current.city === goal) {
       return {
-        path: reconstructPath(currentNode),
-        distance: currentNode.g,
-        nodesExplored: nodesExplored.size,
-        algorithm: 'astar'
+        path: reconstructPath(current),
+        distance: current.g,
+        nodesExplored: closedSet.size,
+        algorithm: 'astar',
+        visitedOrder
       };
     }
 
-    openSet.splice(currentIndex, 1);
-    closedSet.add(currentNode.city);
+    const neighbors = graph[current.city];
+    for (const neighbor in neighbors) {
+      if (closedSet.has(neighbor)) continue;
 
-    for (const neighborCity in graph[currentNode.city]) {
-      if (closedSet.has(neighborCity)) continue;
+      const tentativeG = current.g + neighbors[neighbor];
 
-      const tentativeGScore = currentNode.g + graph[currentNode.city][neighborCity];
-      const heuristicScore = heuristic[neighborCity];
-      const totalScore = tentativeGScore + heuristicScore;
+      const existingNode = openSet.find(n => n.city === neighbor);
+      if (existingNode && tentativeG >= existingNode.g) continue;
 
-      const existingNode = openSet.find(node => node.city === neighborCity);
-      if (existingNode && existingNode.g <= tentativeGScore) continue;
+      const neighborNode: Node = {
+        city: neighbor,
+        g: tentativeG,
+        f: tentativeG + heuristic[neighbor],
+        parent: current
+      };
 
-      openSet.push({
-        city: neighborCity,
-        g: tentativeGScore,
-        h: heuristicScore,
-        f: totalScore,
-        parent: currentNode
-      });
+      if (existingNode) {
+        existingNode.g = neighborNode.g;
+        existingNode.f = neighborNode.f;
+        existingNode.parent = neighborNode.parent;
+      } else {
+        openSet.push(neighborNode);
+      }
     }
   }
 
   return {
     path: [],
     distance: 0,
-    nodesExplored: nodesExplored.size,
-    algorithm: 'astar'
+    nodesExplored: closedSet.size,
+    algorithm: 'astar',
+    visitedOrder
   };
 };
 
+export const dijkstra = (
+  graph: Graph,
+  start: string,
+  goal: string
+): PathfindingResult => {
+  // Dijkstra is A* with h(n) = 0
+  const openSet: Node[] = [];
+  const closedSet = new Set<string>();
+  const visitedOrder: string[] = [];
 
+  openSet.push({
+    city: start,
+    g: 0,
+    f: 0,
+    parent: null
+  });
+
+  while (openSet.length > 0) {
+    let lowestIndex = 0;
+    for (let i = 1; i < openSet.length; i++) {
+      if (openSet[i].g < openSet[lowestIndex].g) { // Compare g score directly
+        lowestIndex = i;
+      }
+    }
+
+    const current = openSet[lowestIndex];
+    openSet.splice(lowestIndex, 1);
+
+    if (closedSet.has(current.city)) continue;
+
+    closedSet.add(current.city);
+    visitedOrder.push(current.city);
+
+    if (current.city === goal) {
+      return {
+        path: reconstructPath(current),
+        distance: current.g,
+        nodesExplored: closedSet.size,
+        algorithm: 'dijkstra',
+        visitedOrder
+      };
+    }
+
+    const neighbors = graph[current.city];
+    for (const neighbor in neighbors) {
+      if (closedSet.has(neighbor)) continue;
+
+      const tentativeG = current.g + neighbors[neighbor];
+
+      const existingNode = openSet.find(n => n.city === neighbor);
+      if (existingNode && tentativeG >= existingNode.g) continue;
+
+      const neighborNode: Node = {
+        city: neighbor,
+        g: tentativeG,
+        f: tentativeG, // f = g
+        parent: current
+      };
+
+      if (existingNode) {
+        existingNode.g = neighborNode.g;
+        existingNode.f = neighborNode.f;
+        existingNode.parent = neighborNode.parent;
+      } else {
+        openSet.push(neighborNode);
+      }
+    }
+  }
+
+  return {
+    path: [],
+    distance: 0,
+    nodesExplored: closedSet.size,
+    algorithm: 'dijkstra',
+    visitedOrder
+  };
+};
+
+export const bfs = (
+  graph: Graph,
+  start: string,
+  goal: string
+): PathfindingResult => {
+  const queue: { city: string; parent: any | null }[] = [{ city: start, parent: null }];
+  const visited = new Set<string>([start]);
+  const visitedOrder: string[] = [];
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    visitedOrder.push(current.city);
+
+    if (current.city === goal) {
+      const path: string[] = [];
+      let curr: any | null = current;
+      while (curr) {
+        path.unshift(curr.city);
+        curr = curr.parent;
+      }
+      return {
+        path,
+        distance: calculatePathDistance(path, graph),
+        nodesExplored: visited.size,
+        algorithm: 'bfs',
+        visitedOrder
+      };
+    }
+
+    const neighbors = Object.keys(graph[current.city] || {});
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        visited.add(neighbor);
+        queue.push({ city: neighbor, parent: current });
+      }
+    }
+  }
+
+  return {
+    path: [],
+    distance: 0,
+    nodesExplored: visited.size,
+    algorithm: 'bfs',
+    visitedOrder
+  };
+};
+
+export const dfs = (
+  graph: Graph,
+  start: string,
+  goal: string
+): PathfindingResult => {
+  const stack: { city: string; parent: any | null }[] = [{ city: start, parent: null }];
+  const visited = new Set<string>();
+  const visitedOrder: string[] = [];
+
+  while (stack.length > 0) {
+    const current = stack.pop()!;
+
+    if (visited.has(current.city)) continue;
+    visited.add(current.city);
+    visitedOrder.push(current.city);
+
+    if (current.city === goal) {
+      const path: string[] = [];
+      let curr: any | null = current;
+      while (curr) {
+        path.unshift(curr.city);
+        curr = curr.parent;
+      }
+      return {
+        path,
+        distance: calculatePathDistance(path, graph),
+        nodesExplored: visited.size,
+        algorithm: 'dfs',
+        visitedOrder
+      };
+    }
+
+    const neighbors = Object.keys(graph[current.city] || {});
+    // Reverse neighbors to process in a more natural order for visualization if needed,
+    // or keep as is. Usually DFS goes deep.
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        stack.push({ city: neighbor, parent: current });
+      }
+    }
+  }
+
+  return {
+    path: [],
+    distance: 0,
+    nodesExplored: visited.size,
+    algorithm: 'dfs',
+    visitedOrder
+  };
+};
+
+// IDDFS Helper
 interface IDDFSNode {
   city: string;
   depth: number;
   parent: IDDFSNode | null;
 }
 
-const depthLimitedSearch = (
-  graph: Graph,
-  currentCity: string,
-  goalCity: string,
-  remainingDepth: number,
-  visited: Set<string>,
-  nodesExplored: Set<string>,
-  parentNode: IDDFSNode | null = null
-): IDDFSNode | null => {
-  if (currentCity === goalCity) {
-    return { 
-      city: currentCity, 
-      depth: remainingDepth, 
-      parent: parentNode 
-    };
-  }
-
-  if (remainingDepth === 0) {
-    return null;
-  }
-
-  visited.add(currentCity);
-  nodesExplored.add(currentCity);
-
-  const currentNode: IDDFSNode = {
-    city: currentCity,
-    depth: remainingDepth,
-    parent: parentNode
-  };
-
-  for (const neighborCity in graph[currentCity]) {
-    if (!visited.has(neighborCity)) {
-      const result = depthLimitedSearch(
-        graph,
-        neighborCity,
-        goalCity,
-        remainingDepth - 1,
-        visited,
-        nodesExplored,
-        currentNode
-      );
-      
-      if (result) {
-        return result;
-      }
-    }
-  }
-
-  return null;
-};
-
-
-
-const reconstructIDDFSPath = (goalNode: IDDFSNode): string[] => {
-  const path: string[] = [];
-  let current: IDDFSNode | null = goalNode;
-  
-  while (current) {
-    path.unshift(current.city);
-    current = current.parent;
-  }
-  
-  return path;
-};
-
 export const iddfs = (
   graph: Graph,
   start: string,
   goal: string
 ): PathfindingResult => {
-  const nodesExplored = new Set<string>();
+  const visitedOrder: string[] = [];
+
+  const depthLimitedSearch = (
+    currentCity: string,
+    remainingDepth: number,
+    visited: Set<string>,
+    localVisitedOrder: string[],
+    parentNode: IDDFSNode | null
+  ): IDDFSNode | null => {
+    localVisitedOrder.push(currentCity); // Track visitation
+
+    if (currentCity === goal) {
+      return { city: currentCity, depth: remainingDepth, parent: parentNode };
+    }
+
+    if (remainingDepth <= 0) return null;
+
+    visited.add(currentCity);
+
+    const neighbors = Object.keys(graph[currentCity] || {});
+    for (const neighbor of neighbors) {
+      if (!visited.has(neighbor)) {
+        const result = depthLimitedSearch(
+          neighbor,
+          remainingDepth - 1,
+          visited,
+          localVisitedOrder,
+          { city: currentCity, depth: remainingDepth, parent: parentNode }
+        );
+        if (result) return result;
+      }
+    }
+
+    visited.delete(currentCity); // Backtrack
+    return null;
+  };
+
   const maxDepth = Object.keys(graph).length;
 
-  for (let currentDepth = 0; currentDepth <= maxDepth; currentDepth++) {
+  for (let depth = 0; depth <= maxDepth; depth++) {
     const visited = new Set<string>();
-    const result = depthLimitedSearch(
-      graph, 
-      start, 
-      goal, 
-      currentDepth, 
-      visited, 
-      nodesExplored
-    );
+    // Note: IDDFS searches re-visit nodes. We collect all visits.
+    const result = depthLimitedSearch(start, depth, visited, visitedOrder, null);
 
     if (result) {
-      const path = reconstructIDDFSPath(result);
-      const distance = calculatePathDistance(path, graph);
-
+      const path: string[] = [];
+      let curr: IDDFSNode | null = result;
+      while (curr) {
+        path.unshift(curr.city);
+        curr = curr.parent;
+      }
       return {
         path,
-        distance,
-        nodesExplored: nodesExplored.size,
-        algorithm: 'iddfs'
+        distance: calculatePathDistance(path, graph),
+        nodesExplored: visitedOrder.length,
+        algorithm: 'iddfs',
+        visitedOrder: visitedOrder
       };
     }
   }
@@ -204,7 +351,8 @@ export const iddfs = (
   return {
     path: [],
     distance: 0,
-    nodesExplored: nodesExplored.size,
-    algorithm: 'iddfs'
+    nodesExplored: visitedOrder.length,
+    algorithm: 'iddfs',
+    visitedOrder
   };
 };

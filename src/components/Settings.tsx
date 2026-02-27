@@ -94,19 +94,19 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
       </button>
 
       {isOpen && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[1004] flex items-center justify-center p-4 animate-fade-in">
-          <div 
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[1004] flex items-center justify-center p-4 animate-fade-in">
+          <div
             ref={modalRef}
-            className="card p-8 w-[540px] max-w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto animate-scale-in hide-scrollbar"
+            className="bg-bg-card/95 dark:bg-neutral-900/95 backdrop-blur-xl border border-white/20 dark:border-white/10 p-8 w-[540px] max-w-[calc(100vw-2rem)] max-h-[90vh] overflow-y-auto rounded-3xl shadow-2xl animate-scale-in hide-scrollbar"
           >
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-8 pb-4 border-b border-border-light dark:border-neutral-800">
               <div>
-                <h2 className="text-2xl font-bold text-text-header mb-1 dark:text-neutral-50">Map Settings</h2>
-                <p className="text-sm text-text-muted dark:text-neutral-400 font-medium">Customize your map appearance</p>
+                <h2 className="text-2xl font-bold text-text-header mb-1 tracking-tight">Map Settings</h2>
+                <p className="text-sm text-text-muted font-medium">Customize your map appearance</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="text-text-muted hover:text-text-body p-2 rounded-full hover:bg-bg-hover transition-all duration-200 dark:text-neutral-400 dark:hover:text-neutral-200 dark:hover:bg-neutral-700"
+                className="text-text-muted hover:text-text-body p-2 rounded-full hover:bg-bg-hover dark:hover:bg-neutral-800 transition-all duration-200"
                 aria-label="Close settings"
               >
                 <X className="w-6 h-6" />
@@ -115,9 +115,9 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
 
             {/* Map Style */}
             <div className="mb-8">
-              <h3 className="text-lg font-semibold text-text-header mb-4 flex items-center gap-2 dark:text-neutral-50">
-                <Map className="w-5 h-5 text-primary" />
-                Map Style
+              <h3 className="text-sm font-bold text-text-muted uppercase tracking-wider mb-4 flex items-center gap-2">
+                <Map className="w-4 h-4" />
+                Map Theme
               </h3>
               <div className="grid grid-cols-3 gap-3">
                 {mapStyles.map((style) => {
@@ -126,13 +126,15 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                     <button
                       key={style.value}
                       onClick={() => onMapStyleChange(style.value)}
-                      className={`flex flex-col items-center gap-2 p-4 border-2 rounded-xl transition-all duration-200 transform hover:scale-105 ${
-                        isActive
-                          ? 'border-primary bg-primary-50 dark:border-primary-400 dark:bg-primary-900/30 shadow-md'
-                          : 'border-border-light hover:border-primary-300 hover:bg-primary-50/50 dark:border-neutral-600 dark:hover:border-primary-400 dark:hover:bg-primary-900/20'
-                      }`}
+                      className={`relative overflow-hidden flex flex-col items-center justify-center gap-3 p-4 border-2 rounded-2xl transition-all duration-300 group ${isActive
+                        ? 'border-primary-500 bg-primary-50/50 dark:bg-primary-900/20 text-primary-700 dark:text-primary-300 shadow-lg shadow-primary-500/10'
+                        : 'border-transparent bg-bg-subtle hover:bg-bg-hover dark:bg-neutral-800 dark:hover:bg-neutral-700 text-text-muted hover:text-text-body'
+                        }`}
                     >
-                      <span className="text-sm font-medium text-text-body dark:text-neutral-300">{style.name}</span>
+                      <span className="text-sm font-semibold">{style.name}</span>
+                      {isActive && (
+                        <div className="absolute inset-x-0 bottom-0 h-1 bg-primary-500 rounded-b-2xl" />
+                      )}
                     </button>
                   );
                 })}
@@ -153,11 +155,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                       <button
                         key={size}
                         onClick={() => handleMarkerSizeChange(size)}
-                        className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 focus:ring-2 focus:ring-primary focus:outline-none min-w-[44px] min-h-[44px] ${
-                          currentMarkerStyle.size === size
-                            ? 'bg-primary-100 text-primary-700 ring-2 ring-primary shadow-md dark:bg-primary-900/30 dark:text-primary-300'
-                            : 'bg-bg-subtle text-text-body hover:bg-primary-50 hover:text-primary-700 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-900/30 dark:hover:text-primary-200'
-                        }`}
+                        className={`w-12 h-12 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-200 focus:ring-2 focus:ring-primary focus:outline-none min-w-[44px] min-h-[44px] ${currentMarkerStyle.size === size
+                          ? 'bg-primary-100 text-primary-700 ring-2 ring-primary shadow-md dark:bg-primary-900/30 dark:text-primary-300'
+                          : 'bg-bg-subtle text-text-body hover:bg-primary-50 hover:text-primary-700 dark:bg-neutral-700 dark:text-neutral-300 dark:hover:bg-primary-900/30 dark:hover:text-primary-200'
+                          }`}
                       >
                         {size}
                       </button>
@@ -171,11 +172,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                       <button
                         key={color}
                         onClick={() => handleMarkerColorChange(color)}
-                        className={`w-12 h-12 rounded-full border-2 transition-all duration-200 focus:ring-2 focus:ring-primary focus:outline-none min-w-[44px] min-h-[44px] ${
-                          currentMarkerStyle.color === color
-                            ? 'border-primary ring-2 ring-primary shadow-md dark:border-primary-400'
-                            : 'border-border-light hover:border-primary-300 dark:border-neutral-600 hover:dark:border-primary-400'
-                        }`}
+                        className={`w-12 h-12 rounded-full border-2 transition-all duration-200 focus:ring-2 focus:ring-primary focus:outline-none min-w-[44px] min-h-[44px] ${currentMarkerStyle.color === color
+                          ? 'border-primary ring-2 ring-primary shadow-md dark:border-primary-400'
+                          : 'border-border-light hover:border-primary-300 dark:border-neutral-600 hover:dark:border-primary-400'
+                          }`}
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -198,11 +198,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                       <button
                         key={weight}
                         onClick={() => handleRouteWeightChange(weight)}
-                        className={`px-4 py-2 text-sm font-medium border-2 rounded-xl transition-all duration-200 min-h-[44px] ${
-                          currentRouteStyle.weight === weight
-                            ? 'border-primary bg-primary-50 text-primary-700 ring-2 ring-primary shadow-md dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                            : 'border-border-light hover:border-primary-300 hover:bg-primary-50/50 dark:border-neutral-600 dark:hover:border-primary-400 dark:hover:bg-primary-900/20'
-                        }`}
+                        className={`px-4 py-2 text-sm font-medium border-2 rounded-xl transition-all duration-200 min-h-[44px] ${currentRouteStyle.weight === weight
+                          ? 'border-primary bg-primary-50 text-primary-700 ring-2 ring-primary shadow-md dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
+                          : 'border-border-light hover:border-primary-300 hover:bg-primary-50/50 dark:border-neutral-600 dark:hover:border-primary-400 dark:hover:bg-primary-900/20'
+                          }`}
                       >
                         {weight}px
                       </button>
@@ -216,11 +215,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                       <button
                         key={color}
                         onClick={() => handleRouteColorChange(color)}
-                        className={`w-12 h-12 rounded-full border-2 transition-all duration-200 min-w-[44px] min-h-[44px] ${
-                          currentRouteStyle.color === color
-                            ? 'border-primary ring-2 ring-primary shadow-md dark:border-primary-400'
-                            : 'border-border-light hover:border-primary-300 dark:border-neutral-600 hover:dark:border-primary-400'
-                        }`}
+                        className={`w-12 h-12 rounded-full border-2 transition-all duration-200 min-w-[44px] min-h-[44px] ${currentRouteStyle.color === color
+                          ? 'border-primary ring-2 ring-primary shadow-md dark:border-primary-400'
+                          : 'border-border-light hover:border-primary-300 dark:border-neutral-600 hover:dark:border-primary-400'
+                          }`}
                         style={{ backgroundColor: color }}
                       />
                     ))}
@@ -233,11 +231,10 @@ const Settings = ({ onMapStyleChange, onMarkerStyleChange, onRouteStyleChange, m
                       <button
                         key={opacity}
                         onClick={() => handleRouteOpacityChange(opacity)}
-                        className={`px-4 py-2 text-sm font-medium border-2 rounded-xl transition-all duration-200 min-h-[44px] ${
-                          currentRouteStyle.opacity === opacity
-                            ? 'border-primary-500 bg-primary-50 text-primary-700 ring-2 ring-primary-500 shadow-md dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
-                            : 'border-neutral-200 hover:border-primary-300 hover:bg-primary-50/50 dark:border-neutral-600 dark:hover:border-primary-400 dark:hover:bg-primary-900/20'
-                        }`}
+                        className={`px-4 py-2 text-sm font-medium border-2 rounded-xl transition-all duration-200 min-h-[44px] ${currentRouteStyle.opacity === opacity
+                          ? 'border-primary-500 bg-primary-50 text-primary-700 ring-2 ring-primary-500 shadow-md dark:border-primary-400 dark:bg-primary-900/30 dark:text-primary-300'
+                          : 'border-neutral-200 hover:border-primary-300 hover:bg-primary-50/50 dark:border-neutral-600 dark:hover:border-primary-400 dark:hover:bg-primary-900/20'
+                          }`}
                       >
                         {opacity}
                       </button>

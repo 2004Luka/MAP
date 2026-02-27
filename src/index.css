@@ -9,17 +9,173 @@
   * {
     @apply antialiased;
   }
-  
+
   html {
     scroll-behavior: smooth;
   }
-  
+
   body {
     @apply font-sans text-text-body bg-bg-main transition-colors duration-300;
   }
 
-  body.dark {
-    @apply bg-neutral-900 text-neutral-50;
+  /* 
+   * THEME VARIABLES
+   * distinct palettes for Light, Dark, and Voyager
+   */
+  :root {
+    /* LIGHT THEME (Default) */
+    /* Primary: Deep Teal - Trust & Precision */
+    --color-primary-50: 240 253 250;
+    --color-primary-100: 204 251 241;
+    --color-primary-200: 153 246 228;
+    --color-primary-300: 94 234 212;
+    --color-primary-400: 45 212 191;
+    --color-primary-500: 20 184 166;
+    --color-primary-600: 13 148 136;
+    --color-primary-700: 15 118 110;
+    --color-primary-800: 17 94 89;
+    --color-primary-900: 19 78 74;
+
+    /* Backgrounds */
+    --color-bg-main: 250 250 250;
+    /* FAFAFA */
+    --color-bg-subtle: 245 245 245;
+    /* F5F5F5 */
+    --color-bg-card: 255 255 255;
+    /* FFFFFF */
+    --color-bg-hover: 249 250 251;
+    /* F9FAFB */
+    --color-bg-active: 243 244 246;
+    /* F3F4F6 */
+
+    /* Text */
+    --color-text-header: 17 24 39;
+    /* Gray 900 */
+    --color-text-body: 55 65 81;
+    /* Gray 700 */
+    --color-text-muted: 107 114 128;
+    /* Gray 500 */
+    --color-text-subtle: 156 163 175;
+    /* Gray 400 */
+
+    /* Borders */
+    --color-border-light: 229 231 235;
+    /* Gray 200 */
+    --color-border-DEFAULT: 209 213 219;
+    /* Gray 300 */
+    --color-border-medium: 156 163 175;
+    /* Gray 400 */
+
+    /* Glass Effects */
+    --glass-bg: 255 255 255;
+    --glass-opacity: 0.8;
+    --glass-border: 255 255 255;
+    --glass-border-opacity: 0.5;
+  }
+
+  /* DARK THEME */
+  .dark {
+    /* Primary: Same scale as light mode for consistent tailwind classes */
+    --color-primary-50: 240 253 250;
+    --color-primary-100: 204 251 241;
+    --color-primary-200: 153 246 228;
+    --color-primary-300: 94 234 212;
+    --color-primary-400: 45 212 191;
+    --color-primary-500: 20 184 166;
+    --color-primary-600: 13 148 136;
+    --color-primary-700: 15 118 110;
+    --color-primary-800: 17 94 89;
+    --color-primary-900: 19 78 74;
+
+    /* Backgrounds - Slate/Neutral mix for depth */
+    --color-bg-main: 10 10 10;
+    /* Near Black */
+    --color-bg-subtle: 23 23 23;
+    /* Neutral 900 */
+    --color-bg-card: 23 23 23;
+    /* Neutral 900 */
+    --color-bg-hover: 38 38 38;
+    /* Neutral 800 */
+    --color-bg-active: 64 64 64;
+    /* Neutral 700 */
+
+    /* Text */
+    --color-text-header: 255 255 255;
+    --color-text-body: 212 212 212;
+    /* Neutral 300 */
+    --color-text-muted: 163 163 163;
+    /* Neutral 400 */
+    --color-text-subtle: 115 115 115;
+    /* Neutral 500 */
+
+    /* Borders */
+    --color-border-light: 38 38 38;
+    /* Neutral 800 */
+    --color-border-DEFAULT: 64 64 64;
+    /* Neutral 700 */
+    --color-border-medium: 82 82 82;
+    /* Neutral 600 */
+
+    /* Glass Effects */
+    --glass-bg: 23 23 23;
+    --glass-opacity: 0.7;
+    --glass-border: 255 255 255;
+    --glass-border-opacity: 0.1;
+
+    @apply bg-bg-main text-text-body;
+  }
+
+  /* VOYAGER THEME (Adventurous & Distinct) */
+  .voyager {
+    /* Primary: Amber/Orange for adventure/navigation feel */
+    --color-primary-50: 255 251 235;
+    --color-primary-100: 254 243 199;
+    --color-primary-200: 253 230 138;
+    --color-primary-300: 252 211 77;
+    --color-primary-400: 251 191 36;
+    --color-primary-500: 245 158 11;
+    --color-primary-600: 217 119 6;
+    --color-primary-700: 180 83 9;
+    --color-primary-800: 146 64 14;
+    --color-primary-900: 120 53 15;
+
+    /* Backgrounds - Warm Off-Whites/Paper tones */
+    --color-bg-main: 253 250 246;
+    /* Warm Paper */
+    --color-bg-subtle: 246 241 235;
+    /* Slightly darker paper */
+    --color-bg-card: 255 255 255;
+    /* pure white for cards to pop */
+    --color-bg-hover: 255 248 240;
+    /* Warm hover */
+    --color-bg-active: 254 236 220;
+    /* Active warm */
+
+    /* Text - Deep Brown/Navy for high contrast but softer than black */
+    --color-text-header: 66 32 6;
+    /* Deep Brown */
+    --color-text-body: 120 53 15;
+    /* Brown 900 */
+    --color-text-muted: 146 64 14;
+    /* Brown 800 */
+    --color-text-subtle: 180 83 9;
+    /* Brown 700 */
+
+    /* Borders */
+    --color-border-light: 254 215 170;
+    /* Orange 200 */
+    --color-border-DEFAULT: 253 186 116;
+    /* Orange 300 */
+    --color-border-medium: 251 146 60;
+    /* Orange 400 */
+
+    /* Glass Effects */
+    --glass-bg: 255 255 255;
+    --glass-opacity: 0.85;
+    --glass-border: 251 191 36;
+    --glass-border-opacity: 0.3;
+
+    @apply bg-bg-main text-text-body;
   }
 
   /* Enhanced focus styles for better accessibility */
@@ -53,21 +209,21 @@
   .btn-primary {
     @apply bg-gradient-to-r from-primary-600 to-primary-700 hover:from-primary-700 hover:to-primary-800 active:from-primary-800 active:to-primary-900 text-white font-semibold px-6 py-3 rounded-xl shadow-lg shadow-primary-600/25 hover:shadow-xl hover:shadow-primary-600/30 transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg disabled:hover:shadow-primary-600/25 transform hover:scale-[1.02] active:scale-[0.98];
   }
-  
+
   .btn-secondary {
     @apply bg-bg-card hover:bg-bg-hover active:bg-bg-active text-text-body font-semibold px-6 py-3 rounded-xl border-2 border-border-light hover:border-border transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 shadow-sm hover:shadow-md dark:bg-neutral-800 dark:text-neutral-50 dark:border-neutral-600 dark:hover:bg-neutral-700 dark:hover:border-neutral-500;
   }
-  
+
   .input-field {
     @apply w-full px-4 py-3 border-2 border-border-light rounded-xl bg-bg-card text-text-body focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-200 placeholder-text-muted hover:border-border dark:bg-neutral-800 dark:text-neutral-50 dark:border-neutral-600 dark:placeholder-neutral-400 dark:hover:border-neutral-500;
   }
-  
+
   .card {
-    @apply bg-bg-card/95 backdrop-blur-xl rounded-2xl shadow-xl border border-border-light/50 transition-all duration-200 dark:bg-neutral-800/95 dark:border-neutral-700/50;
+    @apply bg-white/80 backdrop-blur-md rounded-2xl shadow-soft border border-white/20 transition-all duration-300 dark:bg-neutral-900/80 dark:border-neutral-700/30;
   }
-  
+
   .glass {
-    @apply bg-bg-card/95 backdrop-blur-xl border border-border-light/50 shadow-lg dark:bg-neutral-800/95 dark:border-neutral-700/50;
+    @apply bg-white/70 backdrop-blur-lg border border-white/30 shadow-medium dark:bg-neutral-900/70 dark:border-neutral-700/30;
   }
 
   /* Enhanced loading states */
@@ -76,12 +232,18 @@
   }
 
   .loading::after {
-    @apply content-[''] absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent animate-loading;
+    @apply content-[''] absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/40 to-transparent;
+    animation: shimmer 2s infinite;
   }
 
-  @keyframes loading {
-    0% { left: -100%; }
-    100% { left: 100%; }
+  @keyframes shimmer {
+    0% {
+      left: -100%;
+    }
+
+    100% {
+      left: 100%;
+    }
   }
 
   /* Enhanced tooltip styles */
@@ -151,6 +313,7 @@
       transform: translateY(100%);
       opacity: 0;
     }
+
     to {
       transform: translateY(0);
       opacity: 1;

@@ -4,27 +4,31 @@ export const calculateDistance = (city1: City, city2: City): number => {
   const R = 6371; // Earth's radius in km
   const dLat = (city2.lat - city1.lat) * Math.PI / 180;
   const dLon = (city2.lng - city1.lng) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(city1.lat * Math.PI / 180) * Math.cos(city2.lat * Math.PI / 180) * 
-    Math.sin(dLon/2) * Math.sin(dLon/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(city1.lat * Math.PI / 180) * Math.cos(city2.lat * Math.PI / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return R * c;
 };
 
 export const createGraph = (cities: City[]): Graph => {
   const graph: Graph = {};
-  cities.forEach(city1 => {
-    graph[city1.name] = {};
-    cities.forEach(city2 => {
-      if (city1.name !== city2.name) {
-        const distance = calculateDistance(city1, city2);
-        graph[city1.name][city2.name] = distance;
-      }
-    });
+  cities.forEach(city => {
+    graph[city.name] = {};
+    if (city.connections) {
+      city.connections.forEach(neighborName => {
+        const neighbor = cities.find(c => c.name === neighborName);
+        if (neighbor) {
+          const distance = calculateDistance(city, neighbor);
+          graph[city.name][neighborName] = distance;
+        }
+      });
+    }
   });
   return graph;
 };
+
 
 export const createHeuristic = (cities: City[], goal: string): Heuristic => {
   const heuristic: Heuristic = {};

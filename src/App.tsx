@@ -6,24 +6,26 @@ import { PathfindingControls } from './components/PathfindingControls'
 import { cities } from './data/cities'
 import type { City, AlgorithmType } from './types'
 import { calculatePathDistance, createGraph, createHeuristic } from './utils/pathfinding'
-import { astar, iddfs } from './algorithms/pathfinding'
+import { astar, iddfs, bfs, dfs, dijkstra } from './algorithms/pathfinding'
 import { parseSharedRoute } from './utils/routeSharing'
 
 function App() {
   const cookieSettings = Cookies.get('geoSettings')
   const parsedSettings = cookieSettings ? JSON.parse(cookieSettings) : {}
-  
+
   const [selectedCities, setSelectedCities] = useState<City[]>([])
   const [path, setPath] = useState<string[]>([])
   const [algorithm, setAlgorithm] = useState<AlgorithmType>('astar')
   const [totalDistance, setTotalDistance] = useState<number>(0)
   const [roadDistance, setRoadDistance] = useState<number>(0)
   const [nodesExplored, setNodesExplored] = useState<number>(0)
+  const [visitedOrder, setVisitedOrder] = useState<string[]>([])
   const [roadRoute, setRoadRoute] = useState<[number, number][]>([])
   const [mapStyle, setMapStyle] = useState(parsedSettings.mapStyle || 'light_all')
   const [markerStyle, setMarkerStyle] = useState(parsedSettings.markerStyle || { size: 4, color: '#737373' }) // neutral-500
   const [routeStyle, setRouteStyle] = useState(parsedSettings.routeStyle || { weight: 3, color: '#0D9488', opacity: 0.8 }) // primary
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
+  const [isLoadingRoute, setIsLoadingRoute] = useState(false)
 
   const handleCitySelect = (city: City) => {
     // If no cities are selected, set as start city
@@ -53,31 +55,57 @@ function App() {
         setSelectedCities([city]);
       }
     }
-    
+
     // Clear any existing path when selecting new cities
     setPath([]);
+    setVisitedOrder([]);
     setTotalDistance(0);
     setRoadDistance(0);
     setNodesExplored(0);
     setRoadRoute([]);
   };
 
-  const handleFindPath = (citiesToUse: City[] = selectedCities) => {
+  const handleFindPath = (citiesToUse: City[] = selectedCities, algorithmOverride?: AlgorithmType) => {
     if (citiesToUse.length !== 2) return;
+
+    const algoToUse = algorithmOverride || algorithm;
+
+    // Set loading state immediately for A* and Dijkstra since they fetch road routes
+    if (algoToUse === 'astar' || algoToUse === 'dijkstra') {
+      setIsLoadingRoute(true);
+    }
 
     const graph = createGraph(cities);
     const heuristic = createHeuristic(cities, citiesToUse[1].name);
 
     let result;
-    if (algorithm === 'astar') {
-      result = astar(graph, heuristic, citiesToUse[0].name, citiesToUse[1].name);
-    } else {
-      result = iddfs(graph, citiesToUse[0].name, citiesToUse[1].name);
+    switch (algoToUse) {
+      case 'astar':
+        result = astar(graph, heuristic, citiesToUse[0].name, citiesToUse[1].name);
+        break;
+      case 'dijkstra':
+        result = dijkstra(graph, citiesToUse[0].name, citiesToUse[1].name);
+        break;
+      case 'bfs':
+        result = bfs(graph, citiesToUse[0].name, citiesToUse[1].name);
+        break;
+      case 'dfs':
+        result = dfs(graph, citiesToUse[0].name, citiesToUse[1].name);
+        break;
+      case 'iddfs':
+        result = iddfs(graph, citiesToUse[0].name, citiesToUse[1].name);
+        break;
+      default:
+        result = astar(graph, heuristic, citiesToUse[0].name, citiesToUse[1].name);
     }
 
     setPath(result.path);
     setNodesExplored(result.nodesExplored);
-    setAlgorithm(result.algorithm);
+    // Only update algorithm state if we used an override (meaning it changed)
+    if (algorithmOverride) {
+      setAlgorithm(algorithmOverride);
+    }
+    setVisitedOrder(result.visitedOrder || []);
 
     if (result.path.length > 0) {
       const startCity = cities.find(city => city.name === result.path[0]);
@@ -89,7 +117,7 @@ function App() {
       setSelectedCities([]);
     }
 
-    if (result.algorithm === 'astar') {
+    if (result.algorithm === 'astar' || result.algorithm === 'dijkstra') {
       setTotalDistance(0);
       fetchRoadRoute(result.path);
     } else {
@@ -100,103 +128,25 @@ function App() {
       setRoadRoute([]);
     }
 
-    // Call the original handlePathFound to ensure proper state updates
-    handlePathFound(result.path, result.nodesExplored, result.algorithm);
+    // We don't need to call handlePathFound here anymore since we did the updates above
+    // But we should keep the signature for the child component if we want to keep it dumb
   };
-
-  const handleClearMarkings = () => {
-    setSelectedCities([]);
-    setPath([]);
-    setTotalDistance(0);
-    setRoadDistance(0);
-    setNodesExplored(0);
-    setRoadRoute([]);
-  };
-
-  useEffect(() => {
-    if (mapStyle === 'dark_all') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
-  }, [mapStyle]);
-
-  useEffect(() => {
-    if (selectedCities[0]) Cookies.set('startCity', selectedCities[0].name)
-    if (selectedCities[1]) Cookies.set('endCity', selectedCities[1].name)
-  }, [selectedCities])
-  
-  useEffect(() => {
-    Cookies.set('geoSettings', JSON.stringify({ 
-      mapStyle, 
-      markerStyle, 
-      routeStyle
-    }))
-  }, [mapStyle, markerStyle, routeStyle])
-
-  // Handle shared routes from URL parameters
-  useEffect(() => {
-    const searchParams = new URLSearchParams(window.location.search);
-    const sharedRoute = parseSharedRoute(searchParams);
-    
-    if (sharedRoute) {
-      const startCity = cities.find(city => city.name === sharedRoute.startCity);
-      const endCity = cities.find(city => city.name === sharedRoute.endCity);
-      
-      if (startCity && endCity) {
-        setSelectedCities([startCity, endCity]);
-        setAlgorithm(sharedRoute.algorithm);
-        setPath(sharedRoute.path);
-        setTotalDistance(sharedRoute.totalDistance);
-        setRoadDistance(sharedRoute.roadDistance);
-        setNodesExplored(sharedRoute.nodesExplored);
-        
-        // If it's an A* route, fetch the road route
-        if (sharedRoute.algorithm === 'astar' && sharedRoute.path.length > 0) {
-          fetchRoadRoute(sharedRoute.path);
-        }
-      }
-    }
-  }, []);
-
-  const handlePathFound = (
-    path: string[],
-    explored: number,
-    algorithm: AlgorithmType
-  ) => {
-    setPath(path)
-    setNodesExplored(explored)
-    setAlgorithm(algorithm)
-
-    if (path.length > 0) {
-      const startCity = cities.find(city => city.name === path[0])
-      const endCity = cities.find(city => city.name === path[path.length - 1])
-      if (startCity && endCity) {
-        setSelectedCities([startCity, endCity])
-      }
-    } else {
-      setSelectedCities([])
-    }
-
-    if (algorithm === 'astar') {
-      setTotalDistance(0) 
-      fetchRoadRoute(path)
-    } else {
-      const graph = createGraph(cities)
-      const straightLineDistance = calculatePathDistance(path, graph)
-      setTotalDistance(straightLineDistance)
-      setRoadDistance(0)
-      setRoadRoute([])
-    }
-  }
 
   const handleAlgorithmChange = (newAlgorithm: AlgorithmType) => {
-    setAlgorithm(newAlgorithm)
-    setPath([])
-    setTotalDistance(0)
-    setRoadDistance(0)
-    setNodesExplored(0)
-    setRoadRoute([])
+    setAlgorithm(newAlgorithm);
+
+    if (selectedCities.length === 2) {
+      // Recalculate immediately with new algorithm
+      handleFindPath(selectedCities, newAlgorithm);
+    } else {
+      // Only clear if we don't have a valid path to recalculate
+      setPath([]);
+      setVisitedOrder([]);
+      setTotalDistance(0);
+      setRoadDistance(0);
+      setNodesExplored(0);
+      setRoadRoute([]);
+    }
   }
 
   const fetchRoadRoute = async (path: string[]) => {
@@ -209,26 +159,132 @@ function App() {
       }).filter((coord): coord is string => coord !== null)
 
       const url = `https://router.project-osrm.org/route/v1/driving/${coordinates.join(';')}?overview=full&geometries=geojson`
-      const response = await fetch(url)
+
+      // Add timeout to prevent hanging
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+      const response = await fetch(url, { signal: controller.signal })
+      clearTimeout(timeoutId)
       const data = await response.json()
 
       if (data.routes && data.routes[0]) {
         const roadDist = data.routes[0].distance / 1000
         setRoadDistance(roadDist)
         setTotalDistance(roadDist)
-        
-        const routeCoordinates = data.routes[0].geometry.coordinates.map((coord: number[]) => 
-          [coord[1], coord[0]] as [number, number] 
+
+        const routeCoordinates = data.routes[0].geometry.coordinates.map((coord: number[]) =>
+          [coord[1], coord[0]] as [number, number]
         )
         setRoadRoute(routeCoordinates)
       }
     } catch (error) {
-      console.error('Error fetching road route:', error)
+      if (error instanceof Error && error.name === 'AbortError') {
+        console.warn('Road route fetch timed out')
+      } else {
+        console.error('Error fetching road route:', error)
+      }
+      // Fall back to straight-line distance
+      const graph = createGraph(cities)
+      const straightLineDistance = calculatePathDistance(path, graph)
+      setTotalDistance(straightLineDistance)
       setRoadDistance(0)
+      setRoadRoute([])
+    } finally {
+      setIsLoadingRoute(false)
+    }
+  }
+
+  const handleClearMarkings = () => {
+    setSelectedCities([]);
+    setPath([]);
+    setVisitedOrder([]);
+    setTotalDistance(0);
+    setRoadDistance(0);
+    setNodesExplored(0);
+    setRoadRoute([]);
+  };
+
+  const handlePathFound = (
+    path: string[],
+    explored: number,
+    algorithm: AlgorithmType,
+    visitedOrder: string[] = []
+  ) => {
+    setPath(path)
+    setNodesExplored(explored)
+    setAlgorithm(algorithm)
+    setVisitedOrder(visitedOrder)
+
+    if (path.length > 0) {
+      const startCity = cities.find(city => city.name === path[0])
+      const endCity = cities.find(city => city.name === path[path.length - 1])
+      if (startCity && endCity) {
+        setSelectedCities([startCity, endCity])
+      }
+    } else {
+      setSelectedCities([])
+    }
+
+    if (algorithm === 'astar' || algorithm === 'dijkstra') {
       setTotalDistance(0)
+      fetchRoadRoute(path)
+    } else {
+      const graph = createGraph(cities)
+      const straightLineDistance = calculatePathDistance(path, graph)
+      setTotalDistance(straightLineDistance)
+      setRoadDistance(0)
       setRoadRoute([])
     }
   }
+
+  // Handle shared routes from URL parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const sharedRoute = parseSharedRoute(searchParams);
+
+    if (sharedRoute) {
+      const startCity = cities.find(city => city.name === sharedRoute.startCity);
+      const endCity = cities.find(city => city.name === sharedRoute.endCity);
+
+      if (startCity && endCity) {
+        setSelectedCities([startCity, endCity]);
+        setAlgorithm(sharedRoute.algorithm);
+        setPath(sharedRoute.path);
+        setTotalDistance(sharedRoute.totalDistance);
+        setRoadDistance(sharedRoute.roadDistance);
+        setNodesExplored(sharedRoute.nodesExplored);
+        setVisitedOrder(sharedRoute.visitedOrder || []);
+
+        if (sharedRoute.algorithm === 'astar' && sharedRoute.path.length > 0) {
+          fetchRoadRoute(sharedRoute.path);
+        }
+      }
+    }
+  }, []);
+
+  // Theme Switching Logic
+  useEffect(() => {
+    const body = document.body;
+    // Remove all theme classes first
+    body.classList.remove('dark', 'voyager');
+
+    if (mapStyle === 'dark_all') {
+      body.classList.add('dark');
+    } else if (mapStyle === 'rastertiles/voyager') {
+      body.classList.add('voyager');
+    }
+    // 'light_all' is default, no class needed
+  }, [mapStyle]);
+
+  // Save settings to cookie whenever they change
+  useEffect(() => {
+    Cookies.set('geoSettings', JSON.stringify({
+      mapStyle,
+      markerStyle,
+      routeStyle
+    }), { expires: 365 });
+  }, [mapStyle, markerStyle, routeStyle]);
 
   return (
     <div className="relative w-full h-screen transition-colors duration-300 bg-bg-main text-text-body dark:bg-neutral-900 dark:text-white">
@@ -238,6 +294,7 @@ function App() {
           path={path}
           algorithm={algorithm}
           roadRoute={roadRoute}
+          visitedOrder={visitedOrder}
           mapStyle={mapStyle}
           markerStyle={markerStyle}
           routeStyle={routeStyle}
@@ -306,6 +363,7 @@ function App() {
         onCloseSidebar={() => setIsSidebarOpen(false)}
         selectedCities={selectedCities}
         onCitySelect={handleCitySelect}
+        isLoadingRoute={isLoadingRoute}
       />
     </div>
   )
